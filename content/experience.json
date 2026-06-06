@@ -1,0 +1,42 @@
+[
+  {
+    "type": "Experience",
+    "role": "AI/ML Engineer",
+    "company": "4th IR",
+    "period": "Nov 2025 – Present",
+    "location": "Remote / Ghana",
+    "logo": "/images/4th-ir-logo.jpg",
+    "description": [
+      "• Building intelligent systems for healthcare and enterprise — LLM applications, RAG pipelines, AI agents, FastAPI backends",
+      "• Designing voice AI workflows optimized for production deployment and monitoring",
+      "• Owning end-to-end delivery from model integration through API design to deployment"
+    ],
+    "order": 0
+  },
+  {
+    "type": "Experience",
+    "role": "Co-founder & Lead Engineer",
+    "company": "Edge AI",
+    "period": "Aug 2025 – Present",
+    "location": "Ghana",
+    "description": [
+      "• Co-founded an adaptive AI tutoring platform for Ghanaian JHS/SHS learners",
+      "• Architected scalable stack: Next.js frontend, FastAPI backend, PostgreSQL, sub-600ms streaming voice (Deepgram, Groq, OpenAI TTS)",
+      "• Built live voice tutoring (Cascade pipeline), risk dashboards, and GES-aligned curriculum"
+    ],
+    "order": 1
+  },
+  {
+    "type": "Experience",
+    "role": "Open Source Contributor",
+    "company": "Ghana NLP",
+    "period": "Jun 2024 – Present",
+    "location": "Ghana",
+    "logo": "/images/ghana-nlp-logo.jpg",
+    "description": [
+      "• Contributing to AI and NLP technologies advancing the African tech ecosystem",
+      "• Building practical, locally-relevant systems focused on real-world impact"
+    ],
+    "order": 2
+  }
+]

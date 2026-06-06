@@ -1,0 +1,113 @@
+{
+  "hero": {
+    "title": "Scale your business with AI automation and custom systems",
+    "subtitle": "Skip manual operations. Reduce costs. Build systems that work 24/7.",
+    "ctaLabel": "Book a Consultation"
+  },
+  "problems": {
+    "heading": "The Real Problems",
+    "items": [
+      {
+        "number": "01",
+        "title": "Manual Operations Drain Resources",
+        "description": "Your team spends hours on repetitive tasks instead of strategic work. Every manual process is a bottleneck."
+      },
+      {
+        "number": "02",
+        "title": "Systems Don't Scale With You",
+        "description": "Fragmented tools and workflows break when you grow. You need unified systems that handle complexity."
+      },
+      {
+        "number": "03",
+        "title": "Missed Opportunities for Efficiency",
+        "description": "Competitors are automating. You're still processing data by hand. That's lost time, lost money, lost growth."
+      }
+    ]
+  },
+  "offer": {
+    "icon": "zap",
+    "title": "AI Automation Systems",
+    "description": "Complete solutions that combine intelligent automation, custom software, and industry expertise. We design systems that eliminate manual work, reduce costs, and unlock growth.",
+    "ctaLabel": "Book a Consultation"
+  },
+  "pillars": {
+    "heading": "How We Help",
+    "items": [
+      {
+        "icon": "zap",
+        "title": "Automation Systems",
+        "description": "Transform workflows and eliminate manual work",
+        "items": [
+          "Workflow automation & AI agents",
+          "Process optimization",
+          "24/7 operational systems",
+          "Cost reduction through efficiency"
+        ]
+      },
+      {
+        "icon": "code",
+        "title": "Product Development",
+        "description": "Build scalable software that powers growth",
+        "items": [
+          "Web & mobile applications",
+          "Custom dashboards & tools",
+          "SaaS platforms",
+          "Production-ready systems"
+        ]
+      },
+      {
+        "icon": "chart",
+        "title": "Industry Solutions",
+        "description": "Proven systems for specialized domains",
+        "items": [
+          "Healthcare automation",
+          "Legal document processing",
+          "Real estate tools",
+          "Custom domain expertise"
+        ]
+      }
+    ]
+  },
+  "outcomes": {
+    "heading": "Real Results",
+    "items": [
+      {
+        "metric": "40+%",
+        "description": "Average cost reduction through automation"
+      },
+      {
+        "metric": "5–10x",
+        "description": "Faster workflow execution with AI agents"
+      },
+      {
+        "metric": "100%",
+        "description": "Uptime for deployed systems"
+      }
+    ]
+  },
+  "process": {
+    "heading": "How It Works",
+    "steps": [
+      {
+        "number": "1",
+        "title": "Discovery",
+        "description": "We understand your challenges, workflows, and goals. No assumptions—just clarity."
+      },
+      {
+        "number": "2",
+        "title": "System Design",
+        "description": "We design a custom solution: automation workflows, AI models, and integrations tailored for you."
+      },
+      {
+        "number": "3",
+        "title": "Deploy & Iterate",
+        "description": "Fast deployment with continuous feedback loops. You see results quickly and improve together."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Ready to transform your business?",
+    "description": "Let's discuss how AI automation and custom systems can eliminate bottlenecks and drive growth.",
+    "ctaLabel": "Book a Consultation"
+  }
+}
