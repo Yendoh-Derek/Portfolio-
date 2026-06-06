@@ -1,0 +1,68 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // --- Helper Functions ---
+    
+    // Check if the user is authenticated (signed in)
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if the input data has the required fields and types for messages
+    function isValidMessage() {
+      let incoming = request.resource.data;
+      return incoming.name is string &&
+             incoming.name.size() > 0 &&
+             incoming.email is string &&
+             incoming.email.size() > 0 &&
+             incoming.message is string &&
+             incoming.message.size() > 0;
+    }
+
+    // --- Collection Rules ---
+
+    // Projects: Public Read, Admin Write
+    match /projects/{projectID} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Experience: Public Read, Admin Write
+    match /experience/{experienceID} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Skills: Public Read, Admin Write
+    match /skills/{skillID} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    
+    // Analytics: Public Read, Admin Write (with strict public increment for site_stats)
+    match /analytics/{docID} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+      // Allow public to ONLY increment visits in site_stats
+      allow update: if docID == 'site_stats' && 
+                     request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visits']) &&
+                     request.resource.data.visits == resource.data.visits + 1;
+    }
+
+    // Messages: Admin Read/Delete, Public Create (with validation)
+    match /messages/{messageID} {
+      allow read, delete: if isAuthenticated();
+      allow create: if isValidMessage();
+      allow update: if false; // Messages shouldn't change after sending
+    }
+
+    // Rate Limits: Restricted to Get/Create/Update, No Listing
+    match /rate_limits/{ip} {
+      allow get, create, update: if true;
+      allow list: if false; // VERY important: prevents scraping of visitor IPs
+      allow delete: if isAuthenticated();
+    }
+  }
+}
