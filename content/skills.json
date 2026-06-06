@@ -1,0 +1,14 @@
+[
+  { "name": "Python", "category": "Backend", "level": 9, "experience": "3+ years", "order": 0 },
+  { "name": "PyTorch", "category": "AI/ML", "level": 8, "experience": "2+ years", "order": 1 },
+  { "name": "FastAPI", "category": "Backend", "level": 8, "experience": "2+ years", "order": 2 },
+  { "name": "LLMs & RAG", "category": "AI/ML", "level": 8, "experience": "2+ years", "order": 3 },
+  { "name": "Next.js / React", "category": "Frontend", "level": 8, "experience": "2+ years", "order": 4 },
+  { "name": "TypeScript", "category": "Frontend", "level": 8, "experience": "2+ years", "order": 5 },
+  { "name": "Voice AI Pipelines", "category": "AI/ML", "level": 8, "experience": "1+ year", "order": 6 },
+  { "name": "PostgreSQL", "category": "Database", "level": 7, "experience": "2+ years", "order": 7 },
+  { "name": "Flutter", "category": "Frontend", "level": 7, "experience": "1+ year", "order": 8 },
+  { "name": "MLOps / MLflow", "category": "Tools", "level": 7, "experience": "1+ year", "order": 9 },
+  { "name": "Docker", "category": "Tools", "level": 7, "experience": "2+ years", "order": 10 },
+  { "name": "Git", "category": "Tools", "level": 8, "experience": "3+ years", "order": 11 }
+]

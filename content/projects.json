@@ -1,0 +1,662 @@
+[
+  {
+    "slug": "edge-ai",
+    "title": "Edge AI",
+    "description": "AI-powered diagnostic and remediation platform for Ghanaian JHS/SHS learners — adaptive assessments, live voice tutoring, and teacher risk dashboards aligned to the GES curriculum.",
+    "imageUrl": "/images/edge-ai-hero.png",
+    "projectUrl": "",
+    "githubUrl": "",
+    "tech": [
+      "Next.js",
+      "FastAPI",
+      "PostgreSQL",
+      "Deepgram",
+      "Groq",
+      "OpenAI TTS"
+    ],
+    "order": 1,
+    "details": {
+      "problem": "Ghanaian classrooms often have 40 or more students, yet teachers have no practical way to see which foundational literacy and numeracy skills each learner is missing. Students who fall behind receive the same instruction as everyone else, with no personalized support and no path to self-remediation — especially in classrooms with unreliable connectivity.",
+      "solution": "Edge AI gives every student a personal AI tutor that adapts to their skill level through voice and whiteboard sessions, while giving teachers a class-level view of who is at risk and why. The platform is built around the Ghana Education Service curriculum, using local names, currency, and cultural context throughout.",
+      "features": [
+        {
+          "icon": "ClipboardCheck",
+          "title": "Adaptive Diagnostics",
+          "description": "MCQ assessments mapped to numeracy and literacy micro-skills with immediate per-question feedback."
+        },
+        {
+          "icon": "Mic",
+          "title": "Live Voice Tutor",
+          "description": "Streaming voice pipeline delivers spoken tutor responses in under 600ms, synced with an animated whiteboard."
+        },
+        {
+          "icon": "BarChart3",
+          "title": "Teacher Risk Dashboard",
+          "description": "Class-wide mastery heatmaps rank learners by risk level so teachers know who to prioritize first."
+        },
+        {
+          "icon": "BookOpen",
+          "title": "Curriculum-Aligned Content",
+          "description": "GES-aligned questions, Ghanaian passages, and remediation strategies built into every session."
+        },
+        {
+          "icon": "WifiOff",
+          "title": "Offline-Ready Lessons",
+          "description": "Diagnostic and whiteboard content bundles client-side; voice degrades gracefully when connectivity drops."
+        }
+      ],
+      "architecture": "Students and teachers enter through a dual-role Next.js app backed by FastAPI and PostgreSQL. Diagnostics post skill profiles to the backend; the tutor session runs a 7-step state machine where Deepgram STT streams partial transcripts to Groq Llama 3.3, and the first complete sentence is forwarded to OpenAI TTS immediately via WebSocket. Teacher dashboards pull learner profiles and surface risk classification from skill score distributions. JWT auth gates both roles; lesson plans are LLM-generated and teacher-approved before reaching students.",
+      "techStack": [
+        {
+          "category": "Frontend",
+          "items": [
+            "Next.js 16",
+            "React",
+            "TypeScript",
+            "Tailwind",
+            "Framer Motion"
+          ]
+        },
+        {
+          "category": "Backend",
+          "items": [
+            "FastAPI",
+            "PostgreSQL",
+            "JWT Auth",
+            "WebSockets"
+          ]
+        },
+        {
+          "category": "AI/ML",
+          "items": [
+            "Deepgram STT",
+            "Groq Llama 3.3",
+            "OpenAI TTS",
+            "LLM Lesson Plans"
+          ]
+        },
+        {
+          "category": "Infra",
+          "items": [
+            "Vercel",
+            "Client-side Bundling",
+            "Offline Degradation"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "title": "Cascade streaming pipeline for voice",
+          "rationale": "Sequential STT → LLM → TTS produces 3–5 seconds of dead air between turns. Partial transcript forwarding and sentence-level TTS chunking collapse perceived latency to under 600ms — essential for conversational tutoring."
+        },
+        {
+          "title": "Groq + Llama 3.3 70B for the tutor LLM",
+          "rationale": "Groq's LPU hardware delivers sub-200ms first-token latency, preserving the latency budget for TTS. The system prompt injects the student's skill profile and GES curriculum context to keep responses educationally appropriate."
+        },
+        {
+          "title": "Offline-capable content bundling",
+          "rationale": "Diagnostic questions and whiteboard content ship in the JavaScript build so students in low-connectivity environments can complete assessments without a live connection. Voice falls back to text input when audio is blocked or connectivity drops."
+        },
+        {
+          "title": "GES-aligned skill band thresholds",
+          "rationale": "Skills at ≤40 are flagged as priority gaps aligned with GES competency frameworks — driving both the student results UI and the teacher risk classification logic in one consistent model."
+        }
+      ],
+      "impact": {
+        "metrics": [
+          {
+            "label": "Voice latency",
+            "value": "<600ms"
+          },
+          {
+            "label": "Tracked micro-skills",
+            "value": "5+"
+          },
+          {
+            "label": "Class size target",
+            "value": "40+ students"
+          }
+        ],
+        "summary": "Active development with a working diagnostic flow, live voice tutor pipeline, and teacher dashboard. Targeting pilot deployment with Ghanaian JHS/SHS classrooms."
+      },
+      "relatedSlugs": [
+        "cascade",
+        "diatrack",
+        "prompt-engineering-framework"
+      ]
+    }
+  },
+  {
+    "slug": "diatrack",
+    "title": "DiaTrack",
+    "description": "Clinical decision support for Type 2 diabetes — clinician web dashboard, mobile patient app, and FastAPI backend with ensemble ML models and SHAP explanations (AUC ~0.98).",
+    "imageUrl": "/images/diatrack.png",
+    "projectUrl": "https://yendoh-derek.github.io/DiaTrack-Web-App/",
+    "githubUrl": "https://github.com/Yendoh-Derek/DiaTrack-Web-App",
+    "tech": [
+      "Next.js",
+      "FastAPI",
+      "Flutter",
+      "PostgreSQL",
+      "XGBoost",
+      "SHAP"
+    ],
+    "order": 2,
+    "details": {
+      "problem": "Clinicians assessing Type 2 diabetes risk often receive opaque model scores with no explanation of which patient factors drove the prediction. Patients lack a simple way to track their health data over time. In resource-constrained settings, a tool that is both accurate and interpretable can meaningfully support clinical conversations.",
+      "solution": "DiaTrack combines a clinician-facing web dashboard, a Flutter patient app, and a FastAPI inference backend into one ecosystem. Ensemble ML models deliver high-accuracy risk scores while SHAP explanations show exactly which features contributed — giving clinicians something they can actually discuss with patients.",
+      "features": [
+        {
+          "icon": "Activity",
+          "title": "Ensemble Risk Prediction",
+          "description": "Stacked models (CatBoost, HistGradientBoosting, TabNet, XGBoost meta-learner) achieve ~0.98 AUC on validation sets."
+        },
+        {
+          "icon": "Search",
+          "title": "SHAP Explanations",
+          "description": "Feature-level contribution breakdowns clinicians can trust and discuss with patients."
+        },
+        {
+          "icon": "Smartphone",
+          "title": "Patient Mobile App",
+          "description": "Flutter app for patient data entry and longitudinal health tracking via REST API."
+        },
+        {
+          "icon": "Globe",
+          "title": "In-Browser Demo",
+          "description": "ONNX logistic regression runs locally on GitHub Pages — no backend required for portfolio demos."
+        }
+      ],
+      "architecture": "The clinician dashboard (React + Vite) and Flutter mobile app both communicate with a FastAPI backend over REST. Patient vitals and lab values are submitted to the inference API, which runs a stacked ensemble and returns a risk score plus SHAP attributions. The GitHub Pages demo bypasses the backend entirely — ONNX Runtime Web loads a logistic regression model in-browser with localStorage for demo patient persistence.",
+      "techStack": [
+        {
+          "category": "Frontend",
+          "items": [
+            "React",
+            "TypeScript",
+            "Vite",
+            "Tailwind",
+            "shadcn/ui",
+            "Recharts"
+          ]
+        },
+        {
+          "category": "Mobile",
+          "items": [
+            "Flutter",
+            "REST API"
+          ]
+        },
+        {
+          "category": "Backend",
+          "items": [
+            "FastAPI",
+            "PostgreSQL",
+            "Pydantic"
+          ]
+        },
+        {
+          "category": "AI/ML",
+          "items": [
+            "PyTorch",
+            "XGBoost",
+            "CatBoost",
+            "TabNet",
+            "SHAP",
+            "ONNX Runtime Web"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "title": "Stacked ensemble over a single model",
+          "rationale": "Different base learners capture complementary patterns in tabular clinical data. A meta-learner stacking CatBoost, HistGradientBoosting, and TabNet improved validation AUC beyond any individual model."
+        },
+        {
+          "title": "SHAP for every prediction",
+          "rationale": "Clinical users need interpretability, not just accuracy. SHAP force plots translate model output into feature contributions a clinician can verify against their own judgment."
+        },
+        {
+          "title": "ONNX for the portfolio demo",
+          "rationale": "A backend-dependent demo limits reach on GitHub Pages. Exporting a lightweight logistic regression to ONNX lets the full prediction flow run in-browser with zero infrastructure cost."
+        }
+      ],
+      "impact": {
+        "metrics": [
+          {
+            "label": "Validation AUC",
+            "value": "~0.978"
+          },
+          {
+            "label": "Accuracy",
+            "value": "~98%"
+          },
+          {
+            "label": "Platforms",
+            "value": "Web + Mobile"
+          }
+        ],
+        "summary": "Live demo deployed on GitHub Pages. Full-stack ecosystem with ensemble ML, SHAP explanations, and cross-platform patient management."
+      },
+      "disclaimer": "For educational and portfolio demonstration only. Not for clinical diagnosis.",
+      "relatedSlugs": [
+        "cardiometabolic-risk-from-wearables",
+        "edge-ai",
+        "recommendation-system"
+      ]
+    }
+  },
+  {
+    "slug": "cascade",
+    "title": "Cascade",
+    "description": "Low-latency AI voice tutor pipeline — concurrent Deepgram STT, Groq LLM, and OpenAI TTS streaming that delivers first audio in ~400ms instead of 3–5s sequential latency.",
+    "imageUrl": "/images/cascade.png",
+    "projectUrl": "",
+    "githubUrl": "https://github.com/Yendoh-Derek/Edge-AI",
+    "tech": [
+      "FastAPI",
+      "WebSockets",
+      "Deepgram",
+      "Groq",
+      "OpenAI TTS",
+      "Python"
+    ],
+    "order": 3,
+    "details": {
+      "problem": "Standard voice agents process speech-to-text, language model, and text-to-speech one after another. Students wait 3–5 seconds of silence before hearing a response — long enough to break the flow of a live tutoring session and feel broken, even when each individual stage is fast.",
+      "solution": "Cascade runs all three stages concurrently: partial transcripts feed the LLM while the student is still speaking, and the first complete sentence triggers TTS immediately. The result is first audio in ~400ms — making voice tutoring feel genuinely conversational.",
+      "features": [
+        {
+          "icon": "Zap",
+          "title": "Concurrent Pipeline",
+          "description": "STT, LLM, and TTS overlap instead of waiting for each stage to fully complete."
+        },
+        {
+          "icon": "Radio",
+          "title": "WebSocket Orchestration",
+          "description": "FastAPI async server coordinates three simultaneous long-lived connections per session."
+        },
+        {
+          "icon": "Timer",
+          "title": "Sub-600ms Latency",
+          "description": "First audio reaches the student at ~400ms from end of speech — verified in Phase 1 benchmarks."
+        },
+        {
+          "icon": "ShieldCheck",
+          "title": "Fail-Fast Config",
+          "description": "Missing API keys surface at startup with clear errors, not mid-session inside the pipeline."
+        }
+      ],
+      "architecture": "A FastAPI WebSocket server orchestrates three concurrent async tasks per student session. Deepgram Nova-2 streams partial transcripts over a live WebSocket; confirmed partials forward to Groq Llama 3.3 70B via streaming completions. A sentence chunker monitors the token stream and sends the first complete sentence to OpenAI TTS, which streams MP3 chunks back to the browser audio player. All three external connections run concurrently on a single asyncio event loop.",
+      "techStack": [
+        {
+          "category": "Backend",
+          "items": [
+            "FastAPI",
+            "Python asyncio",
+            "WebSockets",
+            "Pydantic"
+          ]
+        },
+        {
+          "category": "AI/ML",
+          "items": [
+            "Deepgram Nova-2",
+            "Groq Llama 3.3 70B",
+            "OpenAI TTS"
+          ]
+        },
+        {
+          "category": "Infra",
+          "items": [
+            "pytest-asyncio",
+            "Phase-gated Verification",
+            "Frozen Dataclass Config"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "title": "Groq over OpenAI or Anthropic for LLM inference",
+          "rationale": "Groq's LPU hardware delivers ~187ms first-token latency. TTS cannot start until the first sentence exists — at standard GPU speeds, the LLM stage alone would consume the entire latency budget."
+        },
+        {
+          "title": "Sentence-level chunking, not token-level TTS",
+          "rationale": "Individual tokens produce incoherent audio fragments. A complete sentence is the minimum unit TTS can render well, while still forwarding well before the full LLM response finishes."
+        },
+        {
+          "title": "Deepgram Nova-2 over Whisper",
+          "rationale": "Nova-2 emits continuous partial transcripts over a persistent WebSocket. Whisper requires complete audio segments first — incompatible with a live concurrent pipeline."
+        },
+        {
+          "title": "Phased development with verification gates",
+          "rationale": "Phase 1 validates all three API connections before any pipeline code is written. Integration failures surface early with clear diagnostics instead of mid-development debugging."
+        }
+      ],
+      "impact": {
+        "metrics": [
+          {
+            "label": "Time to first audio",
+            "value": "~400ms"
+          },
+          {
+            "label": "Groq first token",
+            "value": "~187ms"
+          },
+          {
+            "label": "vs. sequential",
+            "value": "3–5s → <600ms"
+          }
+        ],
+        "summary": "Pipeline verified end-to-end in Phase 1 benchmarks. Integrated as the voice layer inside Edge AI; browser frontend integration in progress."
+      },
+      "relatedSlugs": [
+        "edge-ai",
+        "recommendation-system",
+        "prompt-engineering-framework"
+      ]
+    }
+  },
+  {
+    "slug": "cardiometabolic-risk-from-wearables",
+    "title": "Cardiometabolic Risk from Wearables",
+    "description": "Self-supervised denoising autoencoder on MIMIC-III PPG signals — learns cardiometabolic risk representations from unlabeled wearable data for downstream clinical tasks.",
+    "imageUrl": "/images/cardiometabolic.png",
+    "projectUrl": "",
+    "githubUrl": "https://github.com/Yendoh-Derek/Cardiometabolic-Risk-System-for-Wearables",
+    "tech": [
+      "PyTorch",
+      "SSL",
+      "MIMIC-III",
+      "ONNX",
+      "MLflow",
+      "Hydra"
+    ],
+    "order": 4,
+    "details": {
+      "problem": "Wearable devices collect rich physiological signals every day, but that data rarely translates into clinical insight. Cardiometabolic markers like dyslipidemia and hypertension are usually assessed through invasive lab tests — while wrist-worn PPG data sits unused beyond step counting.",
+      "solution": "This project trains a self-supervised encoder on unlabeled PPG signals from MIMIC-III, learning robust physiological representations without manual annotations. The pre-trained encoder can then be fine-tuned to predict cardiometabolic risk from wearable data alone.",
+      "features": [
+        {
+          "icon": "Brain",
+          "title": "Self-Supervised Pre-training",
+          "description": "Denoising autoencoder learns from 4,133+ unlabeled PPG windows — no clinical labels required during encoder training."
+        },
+        {
+          "icon": "Layers",
+          "title": "Multi-Component Loss",
+          "description": "MSE + SSIM + FFT objectives preserve temporal fidelity, waveform morphology, and heart rate frequency structure."
+        },
+        {
+          "icon": "Filter",
+          "title": "Signal Quality Pipeline",
+          "description": "SQI filtering and dead-sensor rejection ensure only clean 10-second windows enter training."
+        },
+        {
+          "icon": "FlaskConical",
+          "title": "Experiment Tracking",
+          "description": "MLflow logs every run; Hydra manages configs; ONNX export ready for downstream deployment."
+        }
+      ],
+      "architecture": "Raw MIMIC-III PPG waveforms are loaded via wfdb, denoised, and segmented into 10-second windows at 125 Hz. Each window passes SQI filtering and Z-score normalization before entering a 4M-parameter 1D ResNet denoising autoencoder. The encoder compresses to a 512-dim latent vector; the decoder reconstructs the clean signal from augmented input. Training uses FP16 mixed precision on Colab GPU with subject-level splits to prevent leakage. Checkpoints are versioned in MLflow for downstream fine-tuning.",
+      "techStack": [
+        {
+          "category": "AI/ML",
+          "items": [
+            "PyTorch",
+            "1D ResNet",
+            "SSL Autoencoder",
+            "SHAP",
+            "XGBoost"
+          ]
+        },
+        {
+          "category": "Backend",
+          "items": [
+            "FastAPI",
+            "ONNX Runtime",
+            "Pydantic"
+          ]
+        },
+        {
+          "category": "Infra",
+          "items": [
+            "MLflow",
+            "Hydra",
+            "Google Colab",
+            "Parquet",
+            "Great Expectations"
+          ]
+        },
+        {
+          "category": "Other",
+          "items": [
+            "wfdb",
+            "neurokit2",
+            "MIMIC-III",
+            "PyWavelets"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "title": "3-block encoder instead of 4",
+          "rationale": "A 4-block encoder compresses 1,250 samples to ~78 timesteps before the bottleneck, losing temporal resolution. Three blocks retain ~156 timesteps, preserving more signal structure for PPG morphology."
+        },
+        {
+          "title": "10-second windows instead of full recordings",
+          "rationale": "Full 10-minute signals caused extreme memory pressure and 67× slower FFT computation. Windowing to 10 seconds enabled batch sizes of 128 and made Colab training feasible."
+        },
+        {
+          "title": "Multi-loss (MSE + SSIM + FFT)",
+          "rationale": "Pure MSE misses waveform morphology and frequency content. SSIM preserves structural shape; FFT loss captures periodic heart rate structure — together producing clinically meaningful representations."
+        },
+        {
+          "title": "Subject-level train/val/test splits",
+          "rationale": "The same patient's signals must never appear in both train and validation. Subject ID is preserved as a string to prevent temporal leakage across recordings."
+        }
+      ],
+      "impact": {
+        "metrics": [
+          {
+            "label": "Model size",
+            "value": "4.0M params"
+          },
+          {
+            "label": "Training windows",
+            "value": "4,133+"
+          },
+          {
+            "label": "Unit tests",
+            "value": "39 passing"
+          }
+        ],
+        "summary": "Active research — SSL pre-training complete with MLflow-tracked checkpoints. Downstream fine-tuning on labeled cardiometabolic outcomes is the next milestone."
+      },
+      "relatedSlugs": [
+        "diatrack",
+        "recommendation-system",
+        "cascade"
+      ]
+    }
+  },
+  {
+    "slug": "prompt-engineering-framework",
+    "title": "Prompt Engineering Framework",
+    "description": "Production-oriented prompt standards for teams — reusable templates, department libraries, and chaining patterns for reliable LLM workflows.",
+    "imageUrl": "/images/prompt-engineering-framework.jpg",
+    "projectUrl": "",
+    "githubUrl": "https://github.com/Yendoh-Derek/Prompt-Engineering-Framework",
+    "tech": [
+      "Prompt Design",
+      "RAG",
+      "Chain-of-Thought",
+      "Markdown"
+    ],
+    "order": 5,
+    "details": {
+      "problem": "Teams adopting LLMs often write ad-hoc prompts that produce hallucinations, inconsistent outputs, and wasted tokens. Without shared standards, every engineer reinvents prompting from scratch — and quality varies wildly across projects and departments.",
+      "solution": "A structured framework of reusable prompt templates, documented strategies (zero-shot, few-shot, chain-of-thought, ReAct), and multi-step chaining patterns packaged for engineering, finance, HR, and customer-facing workflows. Teams get auditable, consistent AI workflows instead of one-off experiments.",
+      "features": [
+        {
+          "icon": "FileText",
+          "title": "Template Library",
+          "description": "Modular prompt structures organized by task type and department — copy, adapt, and deploy."
+        },
+        {
+          "icon": "GitBranch",
+          "title": "Prompt Chaining",
+          "description": "Multi-step pipelines that decompose complex reasoning into smaller, verifiable stages."
+        },
+        {
+          "icon": "Shield",
+          "title": "Output Governance",
+          "description": "Structured output constraints and role prompting for auditable, consistent AI responses."
+        },
+        {
+          "icon": "BookMarked",
+          "title": "Strategy Documentation",
+          "description": "Documented patterns for zero-shot, few-shot, CoT, and ReAct with when-to-use guidance."
+        }
+      ],
+      "architecture": "The framework is organized as a Markdown-based library of prompt templates grouped by domain and task type. Each template defines role assignment, context injection, output format constraints, and chaining hooks for multi-step workflows. Strategies are documented with decision criteria so teams choose the right approach for their task complexity and reliability requirements.",
+      "techStack": [
+        {
+          "category": "AI/ML",
+          "items": [
+            "Prompt Engineering",
+            "Chain-of-Thought",
+            "Few-Shot",
+            "ReAct",
+            "RAG"
+          ]
+        },
+        {
+          "category": "Other",
+          "items": [
+            "Markdown Templates",
+            "Output Schemas",
+            "Role Prompting",
+            "Context Management"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "title": "Structured prompting over free-form",
+          "rationale": "Explicit role, context, and output format sections reduce ambiguity and make outputs parseable by downstream systems — critical for production workflows."
+        },
+        {
+          "title": "Modular templates over monolithic prompts",
+          "rationale": "Reusable components scale across departments. A shared context block or output schema change propagates everywhere instead of requiring edits in dozens of one-off prompts."
+        },
+        {
+          "title": "Prompt chaining for complex tasks",
+          "rationale": "Single-shot prompts degrade on multi-step reasoning. Decomposing into retrieval → reasoning → formatting stages improves reliability and makes each step independently testable."
+        }
+      ],
+      "impact": {
+        "summary": "Open-source framework published on GitHub. Designed for teams adopting LLMs who need repeatable quality standards rather than ad-hoc experimentation."
+      },
+      "relatedSlugs": [
+        "recommendation-system",
+        "edge-ai",
+        "cascade"
+      ]
+    }
+  },
+  {
+    "slug": "recommendation-system",
+    "title": "LLM Recommender System",
+    "description": "Semantic recommendation API for open-source LLMs on Hugging Face — RAG, embeddings, and a SAC reinforcement-learning agent for model discovery.",
+    "imageUrl": "/images/model-recommendation.png",
+    "projectUrl": "",
+    "githubUrl": "https://github.com/Yendoh-Derek/LLM-Recommender-System",
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Hugging Face",
+      "RAG",
+      "Reinforcement Learning"
+    ],
+    "order": 6,
+    "details": {
+      "problem": "Traditional recommenders struggle when users describe what they need in natural language — especially with no interaction history (cold-start). Searching the Hugging Face model catalog by keyword misses semantically relevant models that use different terminology.",
+      "solution": "A recommendation API that combines vector retrieval over model documentation with LLM reasoning to match natural-language queries to the most relevant open-source models. Users describe their needs conversationally; the system interprets intent semantically rather than matching exact keywords.",
+      "features": [
+        {
+          "icon": "MessageSquare",
+          "title": "Natural Language Queries",
+          "description": "Users describe needs in plain language — no rigid filters or catalog browsing required."
+        },
+        {
+          "icon": "Search",
+          "title": "Semantic Retrieval",
+          "description": "Embedding-based search over Hugging Face model docs finds relevant models by meaning, not keywords."
+        },
+        {
+          "icon": "Cpu",
+          "title": "RAG Pipeline",
+          "description": "Retrieval-augmented generation grounds recommendations in actual model documentation."
+        },
+        {
+          "icon": "Bot",
+          "title": "RL Agent (SAC)",
+          "description": "Soft Actor-Critic reinforcement learning agent for adaptive recommendation policy — Colab-ready training pipeline."
+        }
+      ],
+      "architecture": "User queries enter a FastAPI service that embeds the query and retrieves top-k similar model entries from a vector index built over Hugging Face documentation. Retrieved context is passed to an LLM that generates a ranked, natural-language recommendation with rationale. A SAC reinforcement learning agent is designed to replace the retrieval ranking policy once trained — the API is structured for a clean policy swap-in.",
+      "techStack": [
+        {
+          "category": "Backend",
+          "items": [
+            "FastAPI",
+            "Python",
+            "Pydantic",
+            "Uvicorn"
+          ]
+        },
+        {
+          "category": "AI/ML",
+          "items": [
+            "Embeddings",
+            "RAG",
+            "Hugging Face Hub",
+            "SAC (RL)",
+            "Semantic Search"
+          ]
+        },
+        {
+          "category": "Infra",
+          "items": [
+            "Vector Index",
+            "Google Colab Training",
+            "Modular API Design"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "title": "Semantic retrieval over keyword search",
+          "rationale": "Users describe needs with varied terminology. Embedding-based similarity matches meaning across different phrasings — solving both cold-start and vocabulary mismatch problems."
+        },
+        {
+          "title": "RAG over pure LLM generation",
+          "rationale": "Recommending models from LLM parametric knowledge alone produces hallucinated model names. Grounding responses in retrieved documentation ensures factual, verifiable recommendations."
+        },
+        {
+          "title": "SAC over DQN for the RL agent",
+          "rationale": "Soft Actor-Critic handles continuous action spaces and exploration more stably than DQN for ranking policies — better suited to adaptive recommendation where the action space is model relevance scores."
+        }
+      ],
+      "impact": {
+        "summary": "API scaffold complete with semantic retrieval and LLM generation. SAC agent training pipeline designed for Colab — targeting adaptive ranking policy integration next."
+      },
+      "relatedSlugs": [
+        "prompt-engineering-framework",
+        "cascade",
+        "diatrack"
+      ]
+    }
+  }
+]
