@@ -8,8 +8,6 @@ DiaTrack is a comprehensive clinical support system for Type 2 diabetes risk ass
 
 **Live demo:** https://yendoh-derek.github.io/DiaTrack-Web-App/
 
-> For educational and portfolio demonstration only. Not for clinical diagnosis.
-
 ---
 
 ## Key Features
@@ -24,12 +22,12 @@ DiaTrack is a comprehensive clinical support system for Type 2 diabetes risk ass
 
 ## Technology Stack
 
-| Layer | Stack |
-|-------|--------|
-| Web | React 18, TypeScript, Vite, Tailwind, shadcn/ui, Recharts, ONNX Runtime Web |
-| Mobile | Flutter, REST API to FastAPI |
-| Backend | FastAPI, PostgreSQL, Python ML stack |
-| ML | PyTorch, XGBoost, SHAP, stacked ensembles |
+| Layer   | Stack                                                                       |
+| ------- | --------------------------------------------------------------------------- |
+| Web     | React 18, TypeScript, Vite, Tailwind, shadcn/ui, Recharts, ONNX Runtime Web |
+| Mobile  | Flutter, REST API to FastAPI                                                |
+| Backend | FastAPI, PostgreSQL, Python ML stack                                        |
+| ML      | PyTorch, XGBoost, SHAP, stacked ensembles                                   |
 
 ---
 

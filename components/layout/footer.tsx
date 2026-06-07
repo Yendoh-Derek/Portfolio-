@@ -9,7 +9,6 @@ import {
   ArrowUp,
   X,
 } from "lucide-react";
-import { VisitCounter } from "@/components/visit-counter";
 import { useProfile } from "@/components/profile-provider";
 
 export function Footer() {
@@ -120,13 +119,10 @@ export function Footer() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col md:flex-row items-center gap-4">
-            <p className="text-xs text-white/30 text-center md:text-left">
-              &copy; {new Date().getFullYear()} {personal.name}. All rights
-              reserved.
-            </p>
-            <VisitCounter />
-          </div>
+          <p className="text-xs text-white/30 text-center md:text-left">
+            &copy; {new Date().getFullYear()} {personal.name}. All rights
+            reserved.
+          </p>
 
           <button
             onClick={scrollToTop}

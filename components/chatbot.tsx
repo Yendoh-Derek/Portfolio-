@@ -32,7 +32,17 @@ export function Chatbot({
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let sid = localStorage.getItem("chat_session_id");
+    if (!sid) {
+      sid = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem("chat_session_id", sid);
+    }
+    setSessionId(sid);
+  }, []);
 
   useEffect(() => {
     if (prefillInput && isOpen) {
@@ -54,14 +64,27 @@ export function Chatbot({
     setSendError(null);
 
     try {
-      const response = await chatWithGeminiAction(newMessages);
+      const response = await chatWithGeminiAction(newMessages, sessionId);
 
       if (response.startsWith("RATE_LIMIT_EXCEEDED:")) {
-        const errorMsg = response.replace("RATE_LIMIT_EXCEEDED:", "").trim();
-        setMessages([
-          ...newMessages,
-          { role: "model", parts: `⚠️ **System Alert:** ${errorMsg}` },
-        ]);
+        const errorType = response.replace("RATE_LIMIT_EXCEEDED:", "").trim();
+
+        if (errorType === "SESSION_LIMIT_REACHED") {
+          const limitMessage = `
+⚠️ **You've reached the chat limit for this session.**
+
+Interested in working together?
+
+[BOOK_CONSULTATION]
+          `.trim();
+
+          setMessages([...newMessages, { role: "model", parts: limitMessage }]);
+        } else {
+          setMessages([
+            ...newMessages,
+            { role: "model", parts: `⚠️ **System Alert:** ${errorType}` },
+          ]);
+        }
       } else {
         setMessages([...newMessages, { role: "model", parts: response }]);
       }
@@ -96,6 +119,7 @@ export function Chatbot({
             <button
               onClick={onClose}
               className="p-2 hover:bg-white/10 rounded-full transition-colors"
+              aria-label="Close assistant"
             >
               <X size={18} className="text-white/70" />
             </button>
@@ -168,41 +192,82 @@ export function Chatbot({
                   {msg.role === "user" ? (
                     msg.parts
                   ) : (
-                    <ReactMarkdown
-                      components={{
-                        p: ({ children }) => (
-                          <p className="mb-2 last:mb-0">{children}</p>
-                        ),
-                        ul: ({ children }) => (
-                          <ul className="list-disc pl-4 mb-2 space-y-1">
-                            {children}
-                          </ul>
-                        ),
-                        ol: ({ children }) => (
-                          <ol className="list-decimal pl-4 mb-2 space-y-1">
-                            {children}
-                          </ol>
-                        ),
-                        li: ({ children }) => <li>{children}</li>,
-                        strong: ({ children }) => (
-                          <span className="font-bold text-white">
-                            {children}
+                    <div className="space-y-4">
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => {
+                            if (
+                              Array.isArray(children) &&
+                              children.some(
+                                (child) =>
+                                  typeof child === "string" &&
+                                  child.includes("[BOOK_CONSULTATION]"),
+                              )
+                            ) {
+                              return null;
+                            }
+                            if (
+                              typeof children === "string" &&
+                              children.includes("[BOOK_CONSULTATION]")
+                            ) {
+                              return null;
+                            }
+                            return <p className="mb-2 last:mb-0">{children}</p>;
+                          },
+                          ul: ({ children }) => (
+                            <ul className="list-disc pl-4 mb-2 space-y-1">
+                              {children}
+                            </ul>
+                          ),
+                          ol: ({ children }) => (
+                            <ol className="list-decimal pl-4 mb-2 space-y-1">
+                              {children}
+                            </ol>
+                          ),
+                          li: ({ children }) => <li>{children}</li>,
+                          strong: ({ children }) => (
+                            <span className="font-bold text-white">
+                              {children}
+                            </span>
+                          ),
+                          a: ({ href, children }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary-300 underline hover:text-[#00f0ff]"
+                            >
+                              {children}
+                            </a>
+                          ),
+                        }}
+                      >
+                        {msg.parts}
+                      </ReactMarkdown>
+
+                      {msg.parts.includes("[BOOK_CONSULTATION]") && (
+                        <button
+                          onClick={() => {
+                            onClose();
+                            setTimeout(() => {
+                              const el = document.getElementById("contact");
+                              if (el) {
+                                el.scrollIntoView({ behavior: "smooth" });
+                              } else {
+                                window.location.href = "/#contact";
+                              }
+                            }, 300);
+                          }}
+                          className="w-full group relative px-4 py-2.5 rounded-full bg-primary text-white font-bold flex items-center justify-center gap-2 overflow-hidden transition-all duration-300 text-sm shadow-[0_4px_15px_rgba(138,43,226,0.3)] hover:shadow-[0_8px_25px_rgba(138,43,226,0.5)] active:scale-95"
+                        >
+                          <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                          <SparkleIcon size={16} className="relative z-10" />
+                          <span className="relative z-10">
+                            Book a Consultation
                           </span>
-                        ),
-                        a: ({ href, children }) => (
-                          <a
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary-300 underline hover:text-[#00f0ff]"
-                          >
-                            {children}
-                          </a>
-                        ),
-                      }}
-                    >
-                      {msg.parts}
-                    </ReactMarkdown>
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -226,7 +291,9 @@ export function Chatbot({
           {/* Input */}
           <div className="p-4 bg-white/5 border-t border-white/5">
             {sendError && (
-              <p className="mb-3 text-xs text-red-300 text-center">{sendError}</p>
+              <p className="mb-3 text-xs text-red-300 text-center">
+                {sendError}
+              </p>
             )}
             <form
               onSubmit={(e) => {
@@ -236,15 +303,18 @@ export function Chatbot({
               className="flex gap-2"
             >
               <input
+                id="chatbot-input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me anything..."
                 className="flex-1 bg-black/40 border border-white/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none placeholder:text-white/30 transition-all"
+                aria-label="Message to AI Assistant"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
                 className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-[#7b2cbf] hover:shadow-[0_0_15px_rgba(138,43,226,0.5)] flex items-center justify-center text-white hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                aria-label="Send message"
               >
                 {isLoading ? (
                   <Loader2 size={18} className="animate-spin" />

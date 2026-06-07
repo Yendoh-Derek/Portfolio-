@@ -5,7 +5,7 @@ import {
 } from "./firebase-admin";
 
 export async function checkRateLimit(
-  ip: string,
+  sessionId: string,
 ): Promise<{ blocked: boolean; message?: string }> {
   if (!isFirebaseAdminConfigured()) {
     return { blocked: false };
@@ -13,11 +13,11 @@ export async function checkRateLimit(
 
   try {
     const db = getPortfolioAdminDb();
-    const docRef = db.collection("rate_limits").doc(ip);
+    const docRef = db.collection("rate_limits").doc(sessionId);
     const docSnap = await docRef.get();
     const now = Date.now();
     const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
-    const LIMIT = 10;
+    const LIMIT = 20;
 
     if (!docSnap.exists) {
       await docRef.set({
@@ -46,8 +46,7 @@ export async function checkRateLimit(
     if (data.count >= LIMIT) {
       return {
         blocked: true,
-        message:
-          "Daily message limit (10) exceeded. Please try again in 24 hours.",
+        message: "SESSION_LIMIT_REACHED",
       };
     }
 
@@ -56,7 +55,11 @@ export async function checkRateLimit(
       lastSeen: now,
     });
     return { blocked: false };
-  } catch (error) {
+  } catch (error: any) {
+    // Handle gRPC NOT_FOUND error (code 5) which can happen if the database/collection doesn't exist
+    if (error?.code === 5 || error?.message?.includes("NOT_FOUND")) {
+      return { blocked: false };
+    }
     console.error("Rate limit check error:", error);
     return { blocked: false };
   }

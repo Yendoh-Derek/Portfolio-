@@ -23,6 +23,11 @@ service cloud.firestore {
 
     // --- Collection Rules ---
 
+    // Deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
     // Projects: Public Read, Admin Write
     match /projects/{projectID} {
       allow read: if true;
@@ -41,28 +46,22 @@ service cloud.firestore {
       allow write: if isAuthenticated();
     }
     
-    // Analytics: Public Read, Admin Write (with strict public increment for site_stats)
+    // Analytics: Public Read, Admin Write
     match /analytics/{docID} {
       allow read: if true;
       allow write: if isAuthenticated();
-      // Allow public to ONLY increment visits in site_stats
-      allow update: if docID == 'site_stats' && 
-                     request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visits']) &&
-                     request.resource.data.visits == resource.data.visits + 1;
     }
 
     // Messages: Admin Read/Delete, Public Create (with validation)
     match /messages/{messageID} {
       allow read, delete: if isAuthenticated();
       allow create: if isValidMessage();
-      allow update: if false; // Messages shouldn't change after sending
+      allow update: if false; 
     }
 
-    // Rate Limits: Restricted to Get/Create/Update, No Listing
+    // Rate Limits: Admin only (Server handles rate limiting via firebase-admin)
     match /rate_limits/{ip} {
-      allow get, create, update: if true;
-      allow list: if false; // VERY important: prevents scraping of visitor IPs
-      allow delete: if isAuthenticated();
+      allow read, write: if isAuthenticated();
     }
   }
 }

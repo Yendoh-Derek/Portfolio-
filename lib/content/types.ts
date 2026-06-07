@@ -76,6 +76,7 @@ export interface Skill {
   level: number;
   experience: string;
   order?: number;
+  icon?: string;
 }
 
 export interface ProfileLinks {
@@ -86,11 +87,16 @@ export interface ProfileLinks {
   twitter?: string;
 }
 
+export interface AboutSectionBlock {
+  title: string;
+  content: string;
+}
+
 export interface AboutContent {
   imageUrl: string;
   quote: string;
-  paragraphs: string[];
-  highlight?: string;
+  sections: AboutSectionBlock[];
+  label?: string;
 }
 
 export interface Profile {

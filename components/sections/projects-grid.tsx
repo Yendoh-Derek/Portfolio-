@@ -27,13 +27,13 @@ export function ProjectsGrid({ projects, onAskAI }: ProjectsGridProps) {
   };
 
   return (
-    <section id="projects" className="py-20 px-4 max-w-7xl mx-auto">
+    <section id="projects" className="py-16 px-4 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-16"
+        className="text-center mb-12 md:mb-16"
       >
         <h2 className="text-4xl md:text-5xl font-bold mb-4">
           Selected Projects

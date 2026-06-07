@@ -6,13 +6,13 @@ import { getSystemPrompt } from "./system-prompt";
 
 export type ChatMessage = { role: "user" | "model"; parts: string };
 
-export async function chatWithGemini(messages: ChatMessage[]): Promise<string> {
+export async function chatWithGemini(
+  messages: ChatMessage[],
+  sessionId: string,
+): Promise<string> {
   try {
-    const headersList = headers();
-    const ip = getRequestIp(headersList);
-
     const { checkRateLimit } = await import("@/lib/analytics/rate-limit");
-    const rateLimit = await checkRateLimit(ip);
+    const rateLimit = await checkRateLimit(sessionId);
     if (rateLimit.blocked) {
       return `RATE_LIMIT_EXCEEDED: ${rateLimit.message}`;
     }

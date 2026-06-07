@@ -25,7 +25,7 @@ export function ExperienceTimeline({ experience }: ExperienceTimelineProps) {
     <section
       id="experience"
       ref={containerRef}
-      className="relative py-32 container mx-auto px-4 overflow-hidden"
+      className="relative py-16 md:py-24 container mx-auto px-4 overflow-hidden"
     >
       {/* Background Interactivity - Parallax Blobs */}
       <motion.div
@@ -41,7 +41,7 @@ export function ExperienceTimeline({ experience }: ExperienceTimelineProps) {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-24"
+        className="text-center mb-12 md:mb-16"
       >
         <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
           My Journey
