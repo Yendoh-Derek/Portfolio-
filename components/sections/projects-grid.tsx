@@ -39,7 +39,7 @@ export function ProjectsGrid({ projects, onAskAI }: ProjectsGridProps) {
           Selected Projects
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          HealthTech, EdTech, and applied ML — from voice agents to clinical
+          HealthTech, EdTech, and applied ML. From voice agents to clinical
           decision support. Ask my AI assistant about the technical details of
           any project.
         </p>

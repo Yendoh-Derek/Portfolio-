@@ -306,6 +306,7 @@ Interested in working together?
                 id="chatbot-input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                autoComplete="off"
                 placeholder="Ask me anything..."
                 className="flex-1 bg-black/40 border border-white/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none placeholder:text-white/30 transition-all"
                 aria-label="Message to AI Assistant"

@@ -1,6 +1,6 @@
 # Portfolio Website
 
-A high-performance **Next.js 14** portfolio featuring an intelligent **AI chatbot** (powered by Google Gemini), **RAG (Retrieval-Augmented Generation)** for contextual answers, dynamic content management, and "Void Alchemist" themed visuals.
+A high-performance **Next.js 14** portfolio featuring an intelligent **AI chatbot** (powered by Google Gemini), **RAG (Retrieval-Augmented Generation)** for contextual answers, dynamic content management.
 
 > _"I build systems that think."_
 
