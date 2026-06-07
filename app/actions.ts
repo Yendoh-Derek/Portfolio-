@@ -10,21 +10,30 @@ const contactFormSchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^(\+233|0)[0-9]{9}$/),
+    .transform((val) => val.replace(/\s+/g, "")) // Remove all spaces
+    .pipe(
+      z
+        .string()
+        .regex(
+          /^\+?[0-9]{7,15}$/,
+          "Please enter a valid phone number (7-15 digits)",
+        ),
+    ),
   message: z.string().trim().min(10).max(5000),
 });
 
-export type ContactFormResult =
-  | { ok: true }
-  | { ok: false; error: string };
+export type ContactFormResult = { ok: true } | { ok: false; error: string };
 
-export async function chatWithGeminiAction(messages: ChatMessage[]) {
+export async function chatWithGeminiAction(
+  messages: ChatMessage[],
+  sessionId: string,
+) {
   const validated = validateChatMessages(messages);
   if (!validated.ok) {
     return validated.error;
   }
 
-  return chatWithGemini(validated.messages);
+  return chatWithGemini(validated.messages, sessionId);
 }
 
 export async function submitContactForm(

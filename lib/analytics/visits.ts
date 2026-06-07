@@ -43,7 +43,11 @@ export async function incrementVisitCount(
     });
 
     return result;
-  } catch (error) {
+  } catch (error: any) {
+    // Handle gRPC NOT_FOUND error (code 5) which can happen if the database/collection/doc doesn't exist
+    if (error?.code === 5 || error?.message?.includes("NOT_FOUND")) {
+      return { ok: false, mode: "disabled" };
+    }
     console.error("Visit increment failed:", error);
     return { ok: false };
   }
@@ -59,7 +63,11 @@ export async function getVisitCount(): Promise<number | null> {
     const snap = await db.collection("analytics").doc("site_stats").get();
     if (!snap.exists) return 0;
     return snap.data()?.visits ?? 0;
-  } catch (error) {
+  } catch (error: any) {
+    // Handle gRPC NOT_FOUND error (code 5) which can happen if the collection/doc doesn't exist yet
+    if (error?.code === 5 || error?.message?.includes("NOT_FOUND")) {
+      return 0;
+    }
     console.error("Error fetching visit count:", error);
     return null;
   }

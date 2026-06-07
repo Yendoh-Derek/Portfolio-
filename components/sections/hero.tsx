@@ -26,7 +26,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex overflow-hidden pb-0 pt-24 sm:pt-28 md:pt-20 lg:pt-28 max-w-[100vw]"
+      className="relative min-h-[85vh] flex overflow-hidden pb-0 pt-20 sm:pt-24 md:pt-28 lg:pt-32 max-w-[100vw]"
     >
       <div className="absolute top-[15%] left-[5%] w-[420px] h-[420px] bg-primary/15 rounded-full blur-[130px] mix-blend-screen pointer-events-none z-0" />
       <div className="absolute top-[30%] right-[0%] w-[380px] h-[380px] bg-accent/10 rounded-full blur-[110px] mix-blend-screen pointer-events-none z-0" />
@@ -39,7 +39,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-xs sm:text-sm font-semibold uppercase tracking-[0.16em] text-primary/80 mb-4"
+              className="text-xs sm:text-sm font-semibold uppercase tracking-[0.16em] text-primary/80 mb-3"
             >
               {personal.title}
             </motion.p>
@@ -48,7 +48,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-bold mb-5 tracking-tight leading-[0.95] antialiased"
+              className="font-bold mb-4 tracking-tight leading-[0.95] antialiased"
             >
               <span className="block text-[clamp(2.2rem,7vw,4.5rem)] md:text-[clamp(3rem,7.5vw,5rem)] lg:text-[clamp(3.5rem,8vw,5.5rem)] font-extrabold bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/55 leading-[0.95]">
                 {displayName}
@@ -59,7 +59,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.35 }}
-              className="text-base md:text-lg text-muted-foreground mb-10 max-w-[560px] leading-[1.6] mx-auto lg:mx-0"
+              className="text-base md:text-lg text-muted-foreground mb-8 max-w-[560px] leading-[1.6] mx-auto lg:mx-0"
             >
               {personal.tagline}
             </motion.p>

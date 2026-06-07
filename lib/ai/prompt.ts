@@ -25,7 +25,7 @@ function formatSnapshotAsMarkdown(snapshot: PortfolioSnapshot): string {
 - **Title**: ${personal.title}
 - **Location**: ${personal.location}
 - **Email**: ${personal.email}
-${about ? `\n## About\n${about.paragraphs.map((p) => `- ${p}`).join("\n")}${about.highlight ? `\n- **Current focus**: ${about.highlight}` : ""}` : ""}
+${about ? `\n## About\n${about.sections.map((s) => `### ${s.title}\n${s.content}`).join("\n")}` : ""}
 
 ## Skills by Category
 ${Object.entries(skillsByCategory)

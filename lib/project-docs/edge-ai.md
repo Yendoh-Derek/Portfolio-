@@ -2,7 +2,7 @@
 
 ## Overview
 
-Edge AI is an AI-powered diagnostic and remediation platform built for Ghanaian Junior High School (JHS), Senior High School (SHS), and TVET learners. It identifies individual literacy and numeracy skill gaps through adaptive assessments, delivers live AI tutor sessions to close those gaps, and surfaces actionable class-level data to teachers. The platform is built for the Ghana Education Service curriculum and uses Ghanaian cultural context — local names, local currency (GH₵), and Ghanaian historical passages — throughout its content. The voice tutor runs on a fully streaming pipeline (Deepgram STT → Groq LLM → OpenAI TTS) that delivers spoken responses in under 600ms, served through a FastAPI backend and a Next.js 16 frontend.
+Edge AI is an AI-powered diagnostic and remediation platform built for Ghanaian Junior High School (JHS), Senior High School (SHS), and TVET learners. It identifies individual literacy and numeracy skill gaps through adaptive assessments, delivers live AI tutor sessions to close those gaps, and surfaces actionable class-level data to teachers. The platform is built for the Ghana Education Service curriculum and uses Ghanaian cultural context — local names, local currency (GH₵), and Ghanaian historical passages — throughout its content. The voice tutor runs on a fully streaming pipeline (Deepgram STT → Groq LLM → OpenAI TTS) that delivers spoken responses in under 600ms, served through a FastAPI backend and a Next.js 15 frontend.
 
 ---
 
@@ -106,7 +106,7 @@ Each learner has a `risk` field: `High Risk | At Risk | On Track`, derived from 
 
 ## Technology Stack
 
-**Frontend:** Next.js 16.1.6 (App Router), React 19.2.3, TypeScript 5
+**Frontend:** Next.js 15.1.0 (App Router), React 19.0.0, TypeScript 5
 
 **Styling:** Tailwind CSS 4, PostCSS, tailwind-merge
 

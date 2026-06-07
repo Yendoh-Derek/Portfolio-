@@ -6,7 +6,6 @@
     "tagline": "Designing AI systems for healthcare, education, and emerging digital infrastructure across Africa.",
     "footerBio": "AI/ML engineer and entrepreneur from Ghana. HealthTech, EdTech, voice AI, and systems built for real constraints.",
     "email": "yendohderek@gmail.com",
-    "phone": "+233 53 821 9391",
     "links": {
       "github": "https://github.com/Yendoh-Derek",
       "linkedin": "https://www.linkedin.com/in/derek-yendoh-4a6174275",
@@ -19,12 +18,25 @@
   "about": {
     "imageUrl": "/images/derek-pic.jpg",
     "quote": "I build for real constraints, not ideal assumptions.",
-    "paragraphs": [
-      "I'm Derek Yendoh, an AI/ML software engineer and early-stage entrepreneur from Ghana focused on practical AI systems for healthcare and education. My work sits at the intersection of software engineering, machine learning, and real-world problem solving across African contexts.",
-      "I currently work as an AI/ML Engineer at 4th IR and contribute to open-source AI initiatives with Ghana NLP. Over the past few years, I've built voice agents, RAG systems, backend infrastructure, and intelligent applications using FastAPI, Python, LLMs, and modern AI frameworks.",
-      "Beyond engineering, I've spent years experimenting with startup ideas — failing, rebuilding, and learning how difficult it is to turn strong technical ideas into scalable products. That process shaped how I think about execution, ownership, and building for real constraints."
-    ],
-    "highlight": "Currently interested in AI infrastructure, intelligent healthcare systems, AI agents, edge AI, and products that improve access across underserved communities."
+    "label": "BUILDER • ENGINEER • ENTREPRENEUR",
+    "sections": [
+      {
+        "title": "Who I Am",
+        "content": "I'm Derek Yendoh, an AI/ML software engineer and early-stage entrepreneur from Ghana focused on practical AI systems for healthcare and education. My work sits at the intersection of software engineering, machine learning, and real-world problem solving across African contexts."
+      },
+      {
+        "title": "What I Build",
+        "content": "I currently work as an AI/ML Engineer at 4th IR and contribute to open-source AI initiatives with Ghana NLP. Over the past few years, I've built voice agents, RAG systems, backend infrastructure, and intelligent applications using FastAPI, Python, LLMs, and modern AI frameworks."
+      },
+      {
+        "title": "My Approach",
+        "content": "Beyond engineering, I've spent years experimenting with startup ideas — failing, rebuilding, and learning how difficult it is to turn strong technical ideas into scalable products. That process shaped how I think about execution, ownership, and building for real constraints."
+      },
+      {
+        "title": "Current Focus",
+        "content": "Currently interested in AI infrastructure, intelligent healthcare systems, AI agents, edge AI, and products that improve access across underserved communities."
+      }
+    ]
   },
   "skillsSummary": {
     "languages": ["Python", "TypeScript", "Dart", "SQL", "JavaScript"],

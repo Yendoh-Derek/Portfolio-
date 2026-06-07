@@ -16,15 +16,54 @@ import {
 import { motion } from "framer-motion";
 import { useProfile } from "@/components/profile-provider";
 
+// Phone number formatting utility
+function formatPhoneDisplay(value: string): string {
+  // Remove all non-digits and plus sign
+  const cleaned = value.replace(/[^\d+]/g, "");
+
+  // Handle +233 format: +233 XXX XXX XXX
+  if (cleaned.startsWith("+233")) {
+    const digits = cleaned.slice(4); // Remove +233
+    if (digits.length <= 3) return `+233 ${digits}`;
+    if (digits.length <= 6)
+      return `+233 ${digits.slice(0, 3)} ${digits.slice(3)}`;
+    return `+233 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
+  }
+
+  // Handle 0 format: 0XX XXX XXXX
+  if (cleaned.startsWith("0")) {
+    const digits = cleaned.slice(1); // Remove 0
+    if (digits.length <= 2) return `0${digits}`;
+    if (digits.length <= 5) return `0${digits.slice(0, 2)} ${digits.slice(2)}`;
+    return `0${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 9)}`;
+  }
+
+  // If starts with 233 but no +, add it
+  if (cleaned.startsWith("233")) {
+    const digits = cleaned.slice(3);
+    if (digits.length <= 3) return `+233 ${digits}`;
+    if (digits.length <= 6)
+      return `+233 ${digits.slice(0, 3)} ${digits.slice(3)}`;
+    return `+233 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
+  }
+
+  return cleaned;
+}
+
 // Validation schema with proper phone number support
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
   email: z.string().email("Please enter a valid email address"),
   phone: z
     .string()
-    .regex(
-      /^(\+233|0)[0-9]{9}$/,
-      "Phone must be: +233XXXXXXXXX or 0XXXXXXXXX (10-11 digits)",
+    .transform((val) => val.replace(/\s+/g, "")) // Strip spaces before validation
+    .pipe(
+      z
+        .string()
+        .regex(
+          /^\+?[0-9]{7,15}$/,
+          "Please enter a valid phone number (7-15 digits)",
+        ),
     ),
   message: z
     .string()
@@ -85,7 +124,7 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="py-20 lg:py-32 container mx-auto px-4 relative flex items-center justify-center min-h-[600px] lg:min-h-[800px]"
+      className="py-16 md:py-24 container mx-auto px-4 relative flex items-center justify-center min-h-[500px] lg:min-h-[700px]"
     >
       {/* Background Glows */}
       <div className="absolute top-1/4 left-[-100px] w-[300px] lg:w-[500px] h-[300px] lg:h-[500px] bg-primary/20 rounded-full blur-[80px] lg:blur-[120px] -z-10" />
@@ -262,13 +301,17 @@ export function ContactSection() {
                 <input
                   type="tel"
                   id="phone"
-                  {...register("phone")}
+                  {...register("phone", {
+                    onChange: (e) => {
+                      e.target.value = formatPhoneDisplay(e.target.value);
+                    },
+                  })}
                   className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
                     errors.phone
                       ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
                       : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
                   }`}
-                  placeholder="+233 XXX XXX XXX"
+                  placeholder="+233 XXX XXX XXX or 0XX XXX XXXX"
                 />
                 {errors.phone && (
                   <p className="text-sm text-red-400 ml-1">
@@ -314,6 +357,14 @@ export function ContactSection() {
                 </div>
               )}
 
+              {/* Privacy Disclosure */}
+              <p className="text-xs text-white/50 text-center">
+                By submitting this form, your name, email, and message will be
+                sent to Derek Yendoh. This information is used solely for
+                communication purposes and will not be shared with third
+                parties.
+              </p>
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -354,6 +405,7 @@ function SocialButton({
       target="_blank"
       rel="noopener noreferrer"
       className="flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/20 hover:bg-white/10 hover:border-white/20 transition-all hover:-translate-y-1 group"
+      aria-label={label}
     >
       <span className="text-white/70 group-hover:text-white transition-colors">
         {icon}

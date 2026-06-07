@@ -203,6 +203,8 @@ function MobileNav({
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="w-9 h-9 rounded-full bg-white/[0.06] flex items-center justify-center text-white active:scale-95 transition-transform"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
           >
             {isOpen ? <X size={18} /> : <Menu size={18} />}
           </button>

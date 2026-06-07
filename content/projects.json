@@ -59,12 +59,7 @@
         },
         {
           "category": "Backend",
-          "items": [
-            "FastAPI",
-            "PostgreSQL",
-            "JWT Auth",
-            "WebSockets"
-          ]
+          "items": ["FastAPI", "PostgreSQL", "JWT Auth", "WebSockets"]
         },
         {
           "category": "AI/ML",
@@ -77,11 +72,7 @@
         },
         {
           "category": "Infra",
-          "items": [
-            "Vercel",
-            "Client-side Bundling",
-            "Offline Degradation"
-          ]
+          "items": ["Vercel", "Client-side Bundling", "Offline Degradation"]
         }
       ],
       "decisions": [
@@ -119,11 +110,7 @@
         ],
         "summary": "Active development with a working diagnostic flow, live voice tutor pipeline, and teacher dashboard. Targeting pilot deployment with Ghanaian JHS/SHS classrooms."
       },
-      "relatedSlugs": [
-        "cascade",
-        "diatrack",
-        "prompt-engineering-framework"
-      ]
+      "relatedSlugs": ["cascade", "diatrack", "prompt-engineering-framework"]
     }
   },
   {
@@ -133,14 +120,7 @@
     "imageUrl": "/images/diatrack.png",
     "projectUrl": "https://yendoh-derek.github.io/DiaTrack-Web-App/",
     "githubUrl": "https://github.com/Yendoh-Derek/DiaTrack-Web-App",
-    "tech": [
-      "Next.js",
-      "FastAPI",
-      "Flutter",
-      "PostgreSQL",
-      "XGBoost",
-      "SHAP"
-    ],
+    "tech": ["Next.js", "FastAPI", "Flutter", "PostgreSQL", "XGBoost", "SHAP"],
     "order": 2,
     "details": {
       "problem": "Clinicians assessing Type 2 diabetes risk often receive opaque model scores with no explanation of which patient factors drove the prediction. Patients lack a simple way to track their health data over time. In resource-constrained settings, a tool that is both accurate and interpretable can meaningfully support clinical conversations.",
@@ -182,18 +162,11 @@
         },
         {
           "category": "Mobile",
-          "items": [
-            "Flutter",
-            "REST API"
-          ]
+          "items": ["Flutter", "REST API"]
         },
         {
           "category": "Backend",
-          "items": [
-            "FastAPI",
-            "PostgreSQL",
-            "Pydantic"
-          ]
+          "items": ["FastAPI", "PostgreSQL", "Pydantic"]
         },
         {
           "category": "AI/ML",
@@ -238,7 +211,6 @@
         ],
         "summary": "Live demo deployed on GitHub Pages. Full-stack ecosystem with ensemble ML, SHAP explanations, and cross-platform patient management."
       },
-      "disclaimer": "For educational and portfolio demonstration only. Not for clinical diagnosis.",
       "relatedSlugs": [
         "cardiometabolic-risk-from-wearables",
         "edge-ai",
@@ -291,20 +263,11 @@
       "techStack": [
         {
           "category": "Backend",
-          "items": [
-            "FastAPI",
-            "Python asyncio",
-            "WebSockets",
-            "Pydantic"
-          ]
+          "items": ["FastAPI", "Python asyncio", "WebSockets", "Pydantic"]
         },
         {
           "category": "AI/ML",
-          "items": [
-            "Deepgram Nova-2",
-            "Groq Llama 3.3 70B",
-            "OpenAI TTS"
-          ]
+          "items": ["Deepgram Nova-2", "Groq Llama 3.3 70B", "OpenAI TTS"]
         },
         {
           "category": "Infra",
@@ -364,14 +327,7 @@
     "imageUrl": "/images/cardiometabolic.png",
     "projectUrl": "",
     "githubUrl": "https://github.com/Yendoh-Derek/Cardiometabolic-Risk-System-for-Wearables",
-    "tech": [
-      "PyTorch",
-      "SSL",
-      "MIMIC-III",
-      "ONNX",
-      "MLflow",
-      "Hydra"
-    ],
+    "tech": ["PyTorch", "SSL", "MIMIC-III", "ONNX", "MLflow", "Hydra"],
     "order": 4,
     "details": {
       "problem": "Wearable devices collect rich physiological signals every day, but that data rarely translates into clinical insight. Cardiometabolic markers like dyslipidemia and hypertension are usually assessed through invasive lab tests — while wrist-worn PPG data sits unused beyond step counting.",
@@ -412,11 +368,7 @@
         },
         {
           "category": "Backend",
-          "items": [
-            "FastAPI",
-            "ONNX Runtime",
-            "Pydantic"
-          ]
+          "items": ["FastAPI", "ONNX Runtime", "Pydantic"]
         },
         {
           "category": "Infra",
@@ -430,12 +382,7 @@
         },
         {
           "category": "Other",
-          "items": [
-            "wfdb",
-            "neurokit2",
-            "MIMIC-III",
-            "PyWavelets"
-          ]
+          "items": ["wfdb", "neurokit2", "MIMIC-III", "PyWavelets"]
         }
       ],
       "decisions": [
@@ -473,11 +420,7 @@
         ],
         "summary": "Active research — SSL pre-training complete with MLflow-tracked checkpoints. Downstream fine-tuning on labeled cardiometabolic outcomes is the next milestone."
       },
-      "relatedSlugs": [
-        "diatrack",
-        "recommendation-system",
-        "cascade"
-      ]
+      "relatedSlugs": ["diatrack", "recommendation-system", "cascade"]
     }
   },
   {
@@ -487,12 +430,7 @@
     "imageUrl": "/images/prompt-engineering-framework.jpg",
     "projectUrl": "",
     "githubUrl": "https://github.com/Yendoh-Derek/Prompt-Engineering-Framework",
-    "tech": [
-      "Prompt Design",
-      "RAG",
-      "Chain-of-Thought",
-      "Markdown"
-    ],
+    "tech": ["Prompt Design", "RAG", "Chain-of-Thought", "Markdown"],
     "order": 5,
     "details": {
       "problem": "Teams adopting LLMs often write ad-hoc prompts that produce hallucinations, inconsistent outputs, and wasted tokens. Without shared standards, every engineer reinvents prompting from scratch — and quality varies wildly across projects and departments.",
@@ -558,11 +496,7 @@
       "impact": {
         "summary": "Open-source framework published on GitHub. Designed for teams adopting LLMs who need repeatable quality standards rather than ad-hoc experimentation."
       },
-      "relatedSlugs": [
-        "recommendation-system",
-        "edge-ai",
-        "cascade"
-      ]
+      "relatedSlugs": ["recommendation-system", "edge-ai", "cascade"]
     }
   },
   {
@@ -609,12 +543,7 @@
       "techStack": [
         {
           "category": "Backend",
-          "items": [
-            "FastAPI",
-            "Python",
-            "Pydantic",
-            "Uvicorn"
-          ]
+          "items": ["FastAPI", "Python", "Pydantic", "Uvicorn"]
         },
         {
           "category": "AI/ML",
@@ -652,11 +581,7 @@
       "impact": {
         "summary": "API scaffold complete with semantic retrieval and LLM generation. SAC agent training pipeline designed for Colab — targeting adaptive ranking policy integration next."
       },
-      "relatedSlugs": [
-        "prompt-engineering-framework",
-        "cascade",
-        "diatrack"
-      ]
+      "relatedSlugs": ["prompt-engineering-framework", "cascade", "diatrack"]
     }
   }
 ]
