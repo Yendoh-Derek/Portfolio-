@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,6 +15,10 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useProfile } from "@/components/profile-provider";
+import {
+  contactFormSchema,
+  type ContactFormInputs,
+} from "@/lib/validation/contact";
 
 // Phone number formatting utility
 function formatPhoneDisplay(value: string): string {
@@ -50,29 +54,6 @@ function formatPhoneDisplay(value: string): string {
   return cleaned;
 }
 
-// Validation schema with proper phone number support
-const contactFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z
-    .string()
-    .transform((val) => val.replace(/\s+/g, "")) // Strip spaces before validation
-    .pipe(
-      z
-        .string()
-        .regex(
-          /^\+?[0-9]{7,15}$/,
-          "Please enter a valid phone number (7-15 digits)",
-        ),
-    ),
-  message: z
-    .string()
-    .min(10, "Message must be at least 10 characters")
-    .max(5000),
-});
-
-type ContactFormInputs = z.infer<typeof contactFormSchema>;
-
 export function ContactSection() {
   const { personal } = useProfile();
   const { email: profileEmail, links } = personal;
@@ -92,27 +73,71 @@ export function ContactSection() {
   });
 
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [phonePlaceholder, setPhonePlaceholder] = useState(
+    "+233 XXX XXX XXX or 0XX XXX XXXX",
+  );
 
-  const onSubmit = async (data: ContactFormInputs) => {
-    setSubmitStatus("submitting");
-    setSubmitError(null);
+  useEffect(() => {
+    const updatePlaceholder = () => {
+      setPhonePlaceholder(
+        window.innerWidth < 640
+          ? "+233 XXX XXX XXX"
+          : "+233 XXX XXX XXX or 0XX XXX XXXX",
+      );
+    };
+    updatePlaceholder();
+    window.addEventListener("resize", updatePlaceholder);
+    return () => window.removeEventListener("resize", updatePlaceholder);
+  }, []);
 
-    try {
-      const { submitContactForm } = await import("@/app/actions");
-      const result = await submitContactForm(data);
+  // Explicit client-side submission handler
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Ensure standard submission is blocked immediately
 
-      if (result.ok) {
-        setSubmitStatus("success");
-        reset();
-      } else {
-        setSubmitError(result.error);
+    // Trigger react-hook-form validation manually via handleSubmit
+    await handleSubmit(async (data: ContactFormInputs) => {
+      setSubmitStatus("submitting");
+      setSubmitError(null);
+
+      try {
+        const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
+        if (!accessKey) {
+          throw new Error("Contact service key is missing.");
+        }
+
+        console.log("DEBUG: Client-side fetch to Web3Forms...");
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: accessKey,
+            subject: "New Portfolio Contact Form Submission",
+            from_name: data.name,
+            ...data,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          setSubmitStatus("success");
+          reset();
+        } else {
+          setSubmitError(
+            result.message || "Failed to send message. Please try again.",
+          );
+          setSubmitStatus("error");
+        }
+      } catch (err) {
+        console.error("Form submission error:", err);
+        setSubmitError("An unexpected error occurred. Please try again later.");
         setSubmitStatus("error");
       }
-    } catch (err) {
-      console.error("Form submission error:", err);
-      setSubmitError("Unable to send your message right now.");
-      setSubmitStatus("error");
-    }
+    })(e);
   };
 
   const copyEmail = () => {
@@ -235,7 +260,7 @@ export function ContactSection() {
             </div>
           ) : (
             <form
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleFormSubmit}
               className="space-y-6 relative z-10"
             >
               {/* Name Field */}
@@ -250,6 +275,7 @@ export function ContactSection() {
                   type="text"
                   id="name"
                   {...register("name")}
+                  autoComplete="name"
                   className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
                     errors.name
                       ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
@@ -276,6 +302,7 @@ export function ContactSection() {
                   type="email"
                   id="email"
                   {...register("email")}
+                  autoComplete="email"
                   className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
                     errors.email
                       ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
@@ -306,12 +333,13 @@ export function ContactSection() {
                       e.target.value = formatPhoneDisplay(e.target.value);
                     },
                   })}
+                  autoComplete="tel"
                   className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
                     errors.phone
                       ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
                       : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
                   }`}
-                  placeholder="+233 XXX XXX XXX or 0XX XXX XXXX"
+                  placeholder={phonePlaceholder}
                 />
                 {errors.phone && (
                   <p className="text-sm text-red-400 ml-1">
@@ -332,6 +360,7 @@ export function ContactSection() {
                   id="message"
                   {...register("message")}
                   rows={5}
+                  autoComplete="off"
                   className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 resize-none ${
                     errors.message
                       ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"

@@ -36,7 +36,7 @@ export function HomeClient({ projects, skills, experience }: HomeClientProps) {
   };
 
   return (
-    <main className="min-h-screen text-foreground selection:bg-primary selection:text-white pb-32 overflow-x-hidden relative">
+    <div className="min-h-screen text-foreground selection:bg-primary selection:text-white pb-32 overflow-x-hidden relative">
       <Hero onOpenChat={() => openChat()} />
       <AboutSection />
       <ProjectsGrid projects={projects} onAskAI={handleAskAI} />
@@ -47,6 +47,6 @@ export function HomeClient({ projects, skills, experience }: HomeClientProps) {
       <SkillsSection skills={skills} />
 
       <ContactSection />
-    </main>
+    </div>
   );
 }

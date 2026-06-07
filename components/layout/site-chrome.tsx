@@ -18,13 +18,13 @@ export function SiteChrome({
   return (
     <ProfileProvider profile={profile}>
       <SiteEffects />
-      <Suspense fallback={null}>
-        <ChatProvider>
-          <DynamicIslandNav />
-          <div className="relative z-10">{children}</div>
-          <Footer />
-        </ChatProvider>
-      </Suspense>
+      <ChatProvider>
+        <DynamicIslandNav />
+        <main className="relative z-10 min-h-screen">
+          <Suspense fallback={null}>{children}</Suspense>
+        </main>
+        <Footer />
+      </ChatProvider>
     </ProfileProvider>
   );
 }

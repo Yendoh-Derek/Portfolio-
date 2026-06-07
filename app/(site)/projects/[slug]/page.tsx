@@ -1,6 +1,7 @@
 import { getProjectBySlug, getProjects } from "@/lib/content";
 import { getRelatedProjects } from "@/lib/content/related-projects";
 import Link from "next/link";
+import { Metadata } from "next";
 import {
   ArrowLeft,
   ExternalLink,
@@ -22,6 +23,45 @@ import { SectionHeading } from "@/components/projects/section-heading";
 export async function generateStaticParams() {
   const projects = await getProjects();
   return projects.map((project) => ({ slug: project.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const project = await getProjectBySlug(params.slug);
+  if (!project) return {};
+
+  const url = process.env.NEXT_PUBLIC_APP_URL || "https://ai-portfolio.vercel.app";
+
+  return {
+    title: project.title,
+    description: project.description,
+    openGraph: {
+      title: project.title,
+      description: project.description,
+      type: "article",
+      url: `${url}/projects/${project.slug}`,
+      images: [
+        {
+          url: project.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: project.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.description,
+      images: [project.imageUrl],
+    },
+    alternates: {
+      canonical: `${url}/projects/${project.slug}`,
+    },
+  };
 }
 
 export default async function ProjectDetailPage({

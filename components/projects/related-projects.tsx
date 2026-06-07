@@ -30,6 +30,7 @@ export function RelatedProjects({ projects }: { projects: Project[] }) {
                   src={project.imageUrl}
                   alt={project.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-contain p-3 opacity-70 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-500"
                 />
               </div>

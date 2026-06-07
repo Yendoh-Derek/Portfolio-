@@ -57,14 +57,14 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
         <div className="h-1 w-24 bg-primary mx-auto rounded-full mb-8" />
 
         {/* Category Filters */}
-        <div className="inline-flex flex-wrap justify-center gap-1 md:gap-2 p-2 rounded-2xl md:rounded-full bg-white/5 border border-white/10 backdrop-blur-md mx-auto">
+        <div className="flex flex-wrap justify-center gap-2 p-1.5 md:p-2 rounded-2xl md:rounded-full bg-white/5 border border-white/10 backdrop-blur-md mx-auto max-w-[95vw] sm:max-w-none">
           {categories.map((cat) => {
             const isActive = activeCategory === cat;
             return (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`relative px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 ${
+                className={`relative px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-colors duration-300 ${
                   isActive ? "text-white" : "text-white/60 hover:text-white"
                 }`}
               >
@@ -82,7 +82,7 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
         {filteredSkills.length === 0 ? (
           <p className="col-span-full text-center text-white/50 py-12">
             No skills match this category yet.
@@ -100,14 +100,15 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
               {/* Interactive light reflection on hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-              <div className="relative z-10 flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-xl bg-white/[0.03] border border-white/10 group-hover:border-primary/40 transition-all duration-300 shadow-md w-12 h-12 flex items-center justify-center overflow-hidden relative isolate">
+              <div className="relative z-10 flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="shrink-0 rounded-xl bg-white/[0.03] border border-white/10 group-hover:border-primary/40 transition-all duration-300 shadow-md w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center overflow-hidden relative isolate">
                     {skill.icon ? (
                       <Image
                         src={skill.icon}
                         alt={`${skill.name} logo`}
                         fill
+                        sizes="48px"
                         className="object-cover transition-all duration-500 group-hover:scale-110"
                       />
                     ) : (
@@ -115,14 +116,13 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
                         {getIcon(skill.category)}
                       </div>
                     )}
-                    {/* Subtle overlay to ensure icon readability if needed */}
                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
                   </div>
-                  <h3 className="font-bold text-white text-lg tracking-tight group-hover:text-primary transition-colors">
+                  <h3 className="font-bold text-white text-base sm:text-lg tracking-tight group-hover:text-primary transition-colors truncate">
                     {skill.name}
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono text-white/50 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                <span className="shrink-0 text-[9px] sm:text-[10px] font-mono text-white/50 bg-white/5 border border-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full uppercase tracking-wider">
                   {skill.experience}
                 </span>
               </div>

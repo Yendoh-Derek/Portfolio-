@@ -41,7 +41,7 @@ export function AboutSection() {
           <div className="h-[1px] w-48 bg-gradient-to-r from-transparent via-primary/40 to-transparent mx-auto" />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[minmax(280px,380px)_1fr] gap-12 md:gap-16 lg:gap-24 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-[7fr_13fr] gap-12 md:gap-16 lg:gap-24 items-center">
           {/* Portrait & Quote Column (Left) */}
           <div className="space-y-10 md:space-y-12">
             <motion.div
