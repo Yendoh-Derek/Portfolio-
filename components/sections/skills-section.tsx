@@ -81,11 +81,7 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
         </div>
       </motion.div>
 
-<<<<<<< HEAD
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
-=======
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
->>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
         {filteredSkills.length === 0 ? (
           <p className="col-span-full text-center text-white/50 py-12">
             No skills match this category yet.
@@ -121,19 +117,11 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
                     )}
                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
                   </div>
-<<<<<<< HEAD
-                  <h3 className="font-bold text-white text-base sm:text-lg tracking-tight group-hover:text-primary transition-colors truncate">
-                    {skill.name}
-                  </h3>
-                </div>
-                <span className="shrink-0 text-[9px] sm:text-[10px] font-mono text-white/50 bg-white/5 border border-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full uppercase tracking-wider">
-=======
                   <h3 className="font-bold text-white text-sm md:text-lg tracking-tight group-hover:text-primary transition-colors truncate">
                     {skill.name}
                   </h3>
                 </div>
-                <span className="text-[9px] md:text-[10px] font-mono text-white/50 bg-white/5 border border-white/10 px-2 md:px-2.5 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
->>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
+                <span className="text-[12px] md:text-xs font-mono text-white/50 bg-white/5 border border-white/10 px-2 md:px-2.5 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
                   {skill.experience}
                 </span>
               </div>

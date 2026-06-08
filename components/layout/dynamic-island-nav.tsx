@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, Briefcase, User, Mail, Menu, X, Cpu } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const navItems = [
@@ -31,8 +31,26 @@ const navItems = [
 
 export function DynamicIslandNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+
+  // Handle navigation to hash sections
+  const handleNavClick = (href: string) => {
+    // If it's a hash link and we're not on home page, navigate to home first
+    if (href.startsWith("/#") && pathname !== "/") {
+      router.push("/");
+      // Scroll to section after route change
+      setTimeout(() => {
+        const sectionId = href.replace("/#", "");
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+      return;
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,13 +115,18 @@ export function DynamicIslandNav() {
   return (
     <>
       <div className="md:hidden">
-        <MobileNav activeSection={activeSection} pathname={pathname} />
+        <MobileNav
+          activeSection={activeSection}
+          pathname={pathname}
+          onNavClick={handleNavClick}
+        />
       </div>
       <div className="hidden md:block">
         <DesktopNav
           scrolled={scrolled}
           pathname={pathname}
           activeSection={activeSection}
+          onNavClick={handleNavClick}
         />
       </div>
     </>
@@ -114,14 +137,16 @@ function DesktopNav({
   scrolled,
   pathname,
   activeSection,
+  onNavClick,
 }: {
   scrolled: boolean;
   pathname: string;
   activeSection: string;
+  onNavClick: (href: string) => void;
 }) {
   return (
     <motion.div
-      className={`fixed top-6 left-1/2 z-50 flex items-center gap-1 px-1.5 py-1.5 rounded-full border border-white/[0.08] backdrop-blur-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.35)] transition-all duration-300 ${
+      className={`fixed top-6 left-1/2 z-50 flex items-center gap-2 px-2 py-1.5 rounded-full border border-white/[0.08] backdrop-blur-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.35)] transition-all duration-300 ${
         scrolled ? "bg-black/60" : "bg-black/30"
       }`}
       style={{ x: "-50%" }}
@@ -138,6 +163,7 @@ function DesktopNav({
           <Link
             key={item.name}
             href={item.href}
+            onClick={() => onNavClick(item.href)}
             className="relative px-3.5 py-1.5 rounded-full flex items-center gap-2 group transition-colors"
           >
             {isActive && (
@@ -176,9 +202,11 @@ function DesktopNav({
 function MobileNav({
   activeSection,
   pathname,
+  onNavClick,
 }: {
   activeSection: string;
   pathname: string;
+  onNavClick: (href: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -188,16 +216,16 @@ function MobileNav({
         initial={false}
         animate={{
           width: isOpen ? "100%" : "auto",
-          height: isOpen ? "auto" : "44px",
-          borderRadius: "22px",
+          height: isOpen ? "auto" : "52px",
+          borderRadius: "26px",
         }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        className={`flex flex-col overflow-hidden bg-black/60 border border-white/[0.08] backdrop-blur-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.35)] ${isOpen ? "p-4" : "px-2 py-1"}`}
+        className={`flex flex-col overflow-hidden bg-black/60 border border-white/[0.08] backdrop-blur-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.35)] ${isOpen ? "p-4" : "px-3 py-1"}`}
       >
-        <div className="flex items-center justify-between gap-4 w-full">
+        <div className="flex items-center justify-between gap-4 w-full h-[44px]">
           {!isOpen && (
             <div className="flex items-center gap-2 px-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500/90 animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-green-500/90 animate-pulse" />
               <span className="text-white/70 text-sm font-medium">Menu</span>
             </div>
           )}
@@ -210,11 +238,11 @@ function MobileNav({
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-9 h-9 rounded-full bg-white/[0.06] flex items-center justify-center text-white active:scale-95 transition-transform"
+            className="w-11 h-11 rounded-full bg-white/[0.06] flex items-center justify-center text-white active:scale-95 transition-transform"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
           >
-            {isOpen ? <X size={18} /> : <Menu size={18} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
@@ -238,8 +266,11 @@ function MobileNav({
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-300 ${
+                    onClick={() => {
+                      onNavClick(item.href);
+                      setIsOpen(false);
+                    }}
+                    className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-colors duration-300 ${
                       isActive
                         ? "bg-white/[0.08] text-white"
                         : "hover:bg-white/[0.04] text-white/55"

@@ -13,7 +13,7 @@ import {
   Copy,
   ExternalLink,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useProfile } from "@/components/profile-provider";
 import {
   contactFormSchema,
@@ -73,16 +73,12 @@ export function ContactSection() {
   });
 
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [phonePlaceholder, setPhonePlaceholder] = useState(
-    "+233 XXX XXX XXX or 0XX XXX XXXX",
-  );
+  const [phonePlaceholder, setPhonePlaceholder] = useState("+233 XXX XXX XXX");
 
   useEffect(() => {
     const updatePlaceholder = () => {
       setPhonePlaceholder(
-        window.innerWidth < 640
-          ? "+233 XXX XXX XXX"
-          : "+233 XXX XXX XXX or 0XX XXX XXXX",
+        window.innerWidth < 640 ? "+233 XXX XXX XXX" : "+233 XXX XXX XXX",
       );
     };
     updatePlaceholder();
@@ -90,55 +86,60 @@ export function ContactSection() {
     return () => window.removeEventListener("resize", updatePlaceholder);
   }, []);
 
+  // Auto-close success message after 5 seconds
+  useEffect(() => {
+    if (submitStatus === "success") {
+      const timer = setTimeout(() => {
+        setSubmitStatus("idle");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitStatus]);
+
   // Explicit client-side submission handler
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Ensure standard submission is blocked immediately
+  const handleFormSubmit = handleSubmit(async (data: ContactFormInputs) => {
+    setSubmitStatus("submitting");
+    setSubmitError(null);
 
-    // Trigger react-hook-form validation manually via handleSubmit
-    await handleSubmit(async (data: ContactFormInputs) => {
-      setSubmitStatus("submitting");
-      setSubmitError(null);
+    try {
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
-      try {
-        const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+      if (!accessKey) {
+        throw new Error("Contact service key is missing.");
+      }
 
-        if (!accessKey) {
-          throw new Error("Contact service key is missing.");
-        }
+      console.log("DEBUG: Client-side fetch to Web3Forms...");
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: "New Portfolio Contact Form Submission",
+          from_name: data.name,
+          ...data,
+        }),
+      });
 
-        console.log("DEBUG: Client-side fetch to Web3Forms...");
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            access_key: accessKey,
-            subject: "New Portfolio Contact Form Submission",
-            from_name: data.name,
-            ...data,
-          }),
-        });
+      const result = await response.json();
 
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-          setSubmitStatus("success");
-          reset();
-        } else {
-          setSubmitError(
-            result.message || "Failed to send message. Please try again.",
-          );
-          setSubmitStatus("error");
-        }
-      } catch (err) {
-        console.error("Form submission error:", err);
-        setSubmitError("An unexpected error occurred. Please try again later.");
+      if (response.ok && result.success) {
+        setSubmitStatus("success");
+        reset();
+      } else {
+        setSubmitError(
+          result.message || "Failed to send message. Please try again.",
+        );
         setSubmitStatus("error");
       }
-    })(e);
-  };
+    } catch (err) {
+      console.error("Form submission error:", err);
+      setSubmitError("An unexpected error occurred. Please try again later.");
+      setSubmitStatus("error");
+    }
+  });
 
   const copyEmail = () => {
     navigator.clipboard.writeText(profileEmail);
@@ -236,188 +237,194 @@ export function ContactSection() {
           {/* Decorative gradient inside card */}
           <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/20 rounded-full blur-[80px]" />
 
-          {submitStatus === "success" ? (
-            <div className="text-center py-20 flex flex-col items-center">
+          <AnimatePresence mode="wait">
+            {submitStatus === "success" ? (
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="w-20 h-20 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mb-6 border border-green-500/30 shadow-[0_0_30px_rgba(74,222,128,0.2)]"
+                key="success"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="text-center py-20 flex flex-col items-center"
               >
-                <CheckCircle2 size={40} />
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="w-20 h-20 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mb-6 border border-green-500/30 shadow-[0_0_30px_rgba(74,222,128,0.2)]"
+                >
+                  <CheckCircle2 size={40} />
+                </motion.div>
+                <h3 className="text-3xl font-bold text-white mb-2">
+                  Message Sent!
+                </h3>
+                <p className="text-white/60 mb-8 max-w-xs mx-auto">
+                  Thanks for reaching out. I&apos;ll get back to you as soon as
+                  possible.
+                </p>
+                <button
+                  onClick={() => setSubmitStatus("idle")}
+                  className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium transition-colors border border-white/5"
+                >
+                  Send another message
+                </button>
               </motion.div>
-              <h3 className="text-3xl font-bold text-white mb-2">
-                Message Sent!
-              </h3>
-              <p className="text-white/60 mb-8 max-w-xs mx-auto">
-                Thanks for reaching out. I&apos;ll get back to you as soon as
-                possible.
-              </p>
-              <button
-                onClick={() => setSubmitStatus("idle")}
-                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium transition-colors border border-white/5"
+            ) : (
+              <form
+                key="form"
+                onSubmit={handleFormSubmit}
+                className="space-y-6 relative z-10"
               >
-                Send another message
-              </button>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleFormSubmit}
-              className="space-y-6 relative z-10"
-            >
-              {/* Name Field */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="name"
-                  className="text-sm font-medium text-white/70 ml-1"
-                >
-                  Name <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  {...register("name")}
-                  autoComplete="name"
-                  className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
-                    errors.name
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
-                      : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
-                  }`}
-                  placeholder="Kofi Sam"
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-400 ml-1">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Email Field */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium text-white/70 ml-1"
-                >
-                  Email <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  {...register("email")}
-                  autoComplete="email"
-                  className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
-                    errors.email
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
-                      : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
-                  }`}
-                  placeholder="kofi@example.com"
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-400 ml-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Phone Field */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="phone"
-                  className="text-sm font-medium text-white/70 ml-1"
-                >
-                  Phone <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  {...register("phone", {
-                    onChange: (e) => {
-                      e.target.value = formatPhoneDisplay(e.target.value);
-                    },
-                  })}
-                  autoComplete="tel"
-                  className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
-                    errors.phone
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
-                      : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
-                  }`}
-<<<<<<< HEAD
-                  placeholder={phonePlaceholder}
-=======
-                  placeholder="+233 XXX XXX XXX"
->>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
-                />
-                {errors.phone && (
-                  <p className="text-sm text-red-400 ml-1">
-                    {errors.phone.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Message Field */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="message"
-                  className="text-sm font-medium text-white/70 ml-1"
-                >
-                  Message <span className="text-red-400">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  {...register("message")}
-                  rows={5}
-                  autoComplete="off"
-                  className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 resize-none ${
-                    errors.message
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
-                      : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
-                  }`}
-                  placeholder="Tell me about your project..."
-                />
-                {errors.message && (
-                  <p className="text-sm text-red-400 ml-1">
-                    {errors.message.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Error Message */}
-              {submitStatus === "error" && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm">
-                  <p className="font-medium">Failed to send message</p>
-                  <p className="text-xs mt-1">
-                    {submitError ??
-                      "Please check your information and try again."}
-                  </p>
+                {/* Name Field */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="name"
+                    className="text-sm font-medium text-white/70 ml-1"
+                  >
+                    Name <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    {...register("name")}
+                    autoComplete="name"
+                    className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
+                      errors.name
+                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
+                    }`}
+                    placeholder="Kofi Sam"
+                  />
+                  {errors.name && (
+                    <p className="text-sm text-red-400 ml-1">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
-              )}
 
-              {/* Privacy Disclosure */}
-              <p className="text-xs text-white/50 text-center">
-                By submitting this form, your name, email, and message will be
-                sent to Derek Yendoh. This information is used solely for
-                communication purposes and will not be shared with third
-                parties.
-              </p>
+                {/* Email Field */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="email"
+                    className="text-sm font-medium text-white/70 ml-1"
+                  >
+                    Email <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    {...register("email")}
+                    autoComplete="email"
+                    className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
+                      errors.email
+                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
+                    }`}
+                    placeholder="kofi@example.com"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-400 ml-1">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-[0_0_30px_rgba(123,44,191,0.4)] hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="animate-spin">⟳</span>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    Send Message <Send size={20} />
-                  </>
+                {/* Phone Field */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="phone"
+                    className="text-sm font-medium text-white/70 ml-1"
+                  >
+                    Phone <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    {...register("phone", {
+                      onChange: (e) => {
+                        e.target.value = formatPhoneDisplay(e.target.value);
+                      },
+                    })}
+                    autoComplete="tel"
+                    className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
+                      errors.phone
+                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
+                    }`}
+                    placeholder={phonePlaceholder}
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-red-400 ml-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Message Field */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="message"
+                    className="text-sm font-medium text-white/70 ml-1"
+                  >
+                    Message <span className="text-red-400">*</span>
+                  </label>
+                  <textarea
+                    id="message"
+                    {...register("message")}
+                    rows={5}
+                    autoComplete="off"
+                    className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 resize-none ${
+                      errors.message
+                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
+                    }`}
+                    placeholder="Tell me about your project..."
+                  />
+                  {errors.message && (
+                    <p className="text-sm text-red-400 ml-1">
+                      {errors.message.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Error Message */}
+                {submitStatus === "error" && (
+                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm">
+                    <p className="font-medium">Failed to send message</p>
+                    <p className="text-xs mt-1">
+                      {submitError ??
+                        "Please check your information and try again."}
+                    </p>
+                  </div>
                 )}
-              </button>
-            </form>
-          )}
+
+                {/* Privacy Disclosure */}
+                <p className="text-xs text-white/50 text-center">
+                  By submitting this form, your name, email, and message will be
+                  sent to Derek Yendoh. This information is used solely for
+                  communication purposes and will not be shared with third
+                  parties.
+                </p>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-[0_0_30px_rgba(123,44,191,0.4)] hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="animate-spin">⟳</span>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Send Message <Send size={20} />
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>

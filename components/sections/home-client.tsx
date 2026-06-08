@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import type { Experience, Project, Skill } from "@/lib/content";
 import { ServicesTeaser } from "@/components/sections/services-teaser";
 import { useChat } from "@/components/chat-provider";
+import { ScrollReveal } from "@/components/layout/scroll-reveal";
 
 interface HomeClientProps {
   projects: Project[];
@@ -38,15 +39,30 @@ export function HomeClient({ projects, skills, experience }: HomeClientProps) {
   return (
     <div className="min-h-screen text-foreground selection:bg-primary selection:text-white pb-32 overflow-x-hidden relative">
       <Hero onOpenChat={() => openChat()} />
-      <AboutSection />
-      <ProjectsGrid projects={projects} onAskAI={handleAskAI} />
 
-      <ServicesTeaser />
+      <ScrollReveal delay={0.1}>
+        <AboutSection />
+      </ScrollReveal>
 
-      <ExperienceTimeline experience={experience} />
-      <SkillsSection skills={skills} />
+      <ScrollReveal delay={0.1}>
+        <ProjectsGrid projects={projects} onAskAI={handleAskAI} />
+      </ScrollReveal>
 
-      <ContactSection />
+      <ScrollReveal delay={0.1}>
+        <ServicesTeaser />
+      </ScrollReveal>
+
+      <ScrollReveal delay={0.1}>
+        <ExperienceTimeline experience={experience} />
+      </ScrollReveal>
+
+      <ScrollReveal delay={0.1}>
+        <SkillsSection skills={skills} />
+      </ScrollReveal>
+
+      <ScrollReveal delay={0.1}>
+        <ContactSection />
+      </ScrollReveal>
     </div>
   );
 }

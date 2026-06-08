@@ -88,6 +88,7 @@ function ProjectCardComponent({
             src={project.imageUrl}
             alt={project.title}
             fill
+            loading={index === 0 ? "eager" : "lazy"}
             className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-60 group-hover:opacity-100"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
@@ -120,18 +121,18 @@ function ProjectCardComponent({
                 href={project.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all hover:scale-110"
+                className="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all hover:scale-110"
                 title="View Code"
               >
-                <Github size={18} />
+                <Github size={20} />
               </a>
             )}
             {project.isPrivate && (
               <span
-                className="p-2 rounded-full bg-white/5 text-white/40 cursor-default"
+                className="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 text-white/40 cursor-default"
                 title="Private — not open source"
               >
-                <Lock size={18} />
+                <Lock size={20} />
               </span>
             )}
             {project.links.demo && (
@@ -139,10 +140,10 @@ function ProjectCardComponent({
                 href={project.links.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all hover:scale-110"
+                className="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all hover:scale-110"
                 title="Live Demo"
               >
-                <ExternalLink size={18} />
+                <ExternalLink size={20} />
               </a>
             )}
           </div>

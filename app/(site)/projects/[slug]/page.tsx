@@ -16,7 +16,7 @@ import {
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { ProjectDetailSidebar } from "@/components/projects/project-detail-sidebar";
-import { MobileAICTA } from "@/components/projects/mobile-ai-cta";
+import { AIAgentButton } from "@/components/projects/ai-agent-button";
 import { ProjectFeatureIcon } from "@/components/projects/project-feature-icon";
 import { RelatedProjects } from "@/components/projects/related-projects";
 import { SectionHeading } from "@/components/projects/section-heading";
@@ -34,7 +34,8 @@ export async function generateMetadata({
   const project = await getProjectBySlug(params.slug);
   if (!project) return {};
 
-  const url = process.env.NEXT_PUBLIC_APP_URL || "https://ai-portfolio.vercel.app";
+  const url =
+    process.env.NEXT_PUBLIC_APP_URL || "https://ai-portfolio.vercel.app";
 
   return {
     title: project.title,
@@ -110,6 +111,15 @@ export default async function ProjectDetailPage({
             </p>
 
             <div className="flex flex-wrap gap-3 pt-2 justify-center lg:justify-start">
+              {/* Mobile AI Agent Button - shown first on mobile, except for diatrack */}
+              {slug !== "diatrack" && (
+                <div className="lg:hidden">
+                  <AIAgentButton
+                    projectTitle={project.title}
+                    variant="compact"
+                  />
+                </div>
+              )}
               {project.projectUrl && (
                 <a
                   href={project.projectUrl}
@@ -132,11 +142,6 @@ export default async function ProjectDetailPage({
                   GitHub
                 </a>
               )}
-            </div>
-
-            {/* Mobile AI Assistant CTA - hidden on desktop */}
-            <div className="lg:hidden pt-4">
-              <MobileAICTA projectTitle={project.title} />
             </div>
           </div>
 

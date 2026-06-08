@@ -37,6 +37,11 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
 }
 
 body {
@@ -45,6 +50,17 @@ body {
   font-family: var(--font-dm-sans), sans-serif;
   -webkit-overflow-scrolling: touch;
   position: relative;
+}
+
+/* Accessibility: Focus Rings */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Remove default focus for mouse users if focus-visible is supported */
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 h1,
