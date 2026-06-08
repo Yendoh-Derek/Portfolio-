@@ -18,7 +18,6 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
     "Database",
     "Tools",
     "AI/ML",
-    "Other",
   ];
 
   const filteredSkills =
@@ -82,7 +81,11 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
         </div>
       </motion.div>
 
+<<<<<<< HEAD
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+=======
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
         {filteredSkills.length === 0 ? (
           <p className="col-span-full text-center text-white/50 py-12">
             No skills match this category yet.
@@ -95,7 +98,7 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.03, duration: 0.4 }}
-              className="group p-5 md:p-6 rounded-[1.5rem] bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/10 hover:border-primary/40 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur-sm relative overflow-hidden"
+              className="group p-4 md:p-6 rounded-[1.5rem] bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/10 hover:border-primary/40 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur-sm relative overflow-hidden"
             >
               {/* Interactive light reflection on hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -118,11 +121,19 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
                     )}
                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
                   </div>
+<<<<<<< HEAD
                   <h3 className="font-bold text-white text-base sm:text-lg tracking-tight group-hover:text-primary transition-colors truncate">
                     {skill.name}
                   </h3>
                 </div>
                 <span className="shrink-0 text-[9px] sm:text-[10px] font-mono text-white/50 bg-white/5 border border-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full uppercase tracking-wider">
+=======
+                  <h3 className="font-bold text-white text-sm md:text-lg tracking-tight group-hover:text-primary transition-colors truncate">
+                    {skill.name}
+                  </h3>
+                </div>
+                <span className="text-[9px] md:text-[10px] font-mono text-white/50 bg-white/5 border border-white/10 px-2 md:px-2.5 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
                   {skill.experience}
                 </span>
               </div>

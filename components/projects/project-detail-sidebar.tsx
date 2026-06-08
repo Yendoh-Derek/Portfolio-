@@ -15,8 +15,13 @@ export function ProjectDetailSidebar({
   const { openChat } = useChat();
 
   return (
+<<<<<<< HEAD
     <aside className="lg:col-span-4 space-y-8">
       <div className="obsidian-card p-6 md:p-8 space-y-6 sticky top-24 max-w-2xl mx-auto lg:max-w-none">
+=======
+    <aside className="hidden lg:block lg:col-span-4 space-y-8">
+      <div className="obsidian-card p-8 space-y-6 sticky top-24">
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
         <div className="flex items-center gap-3 text-white font-bold border-b border-white/10 pb-4">
           <SparkleIcon size={20} className="text-primary animate-pulse" />
           <h3>AI Assistant</h3>
@@ -38,7 +43,10 @@ export function ProjectDetailSidebar({
 
         <div className="pt-6 space-y-4 border-t border-white/10">
           {tech.slice(0, 4).map((t) => (
-            <div key={t} className="flex items-center gap-3 text-xs text-white/60">
+            <div
+              key={t}
+              className="flex items-center gap-3 text-xs text-white/60"
+            >
               <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_6px_rgba(0,240,255,0.8)]" />
               <span>Focus: {t}</span>
             </div>

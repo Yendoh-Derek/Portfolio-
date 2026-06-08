@@ -3,7 +3,11 @@
     "name": "Python",
     "category": "Backend",
     "level": 9,
+<<<<<<< HEAD
     "experience": "4+ years",
+=======
+    "experience": "3+ years",
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
     "order": 0,
     "icon": "/images/python-logo.jpg"
   },
@@ -19,7 +23,11 @@
     "name": "FastAPI",
     "category": "Backend",
     "level": 8,
+<<<<<<< HEAD
     "experience": "3+ years",
+=======
+    "experience": "2+ years",
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
     "order": 2,
     "icon": "/images/fastapi-logo.png"
   },
@@ -28,14 +36,22 @@
     "category": "AI/ML",
     "level": 8,
     "experience": "2+ years",
+<<<<<<< HEAD
     "order": 3,
     "icon": "/images/llm-logo.jpg"
+=======
+    "order": 3
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
   },
   {
     "name": "Next.js / React",
     "category": "Frontend",
     "level": 8,
+<<<<<<< HEAD
     "experience": "3+ years",
+=======
+    "experience": "2+ years",
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
     "order": 4,
     "icon": "/images/react-logo.png"
   },
@@ -52,8 +68,12 @@
     "category": "AI/ML",
     "level": 8,
     "experience": "1+ year",
+<<<<<<< HEAD
     "order": 6,
     "icon": "/images/voice-ai-logo.png"
+=======
+    "order": 6
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
   },
   {
     "name": "PostgreSQL",
@@ -91,7 +111,11 @@
     "name": "Git",
     "category": "Tools",
     "level": 8,
+<<<<<<< HEAD
     "experience": "4+ years",
+=======
+    "experience": "3+ years",
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
     "order": 11,
     "icon": "/images/git-logo.png"
   }

@@ -222,6 +222,7 @@ export function ContactSection() {
 
         {/* Right Column: Interactive Form */}
         <motion.div
+          id="form-section"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -339,7 +340,11 @@ export function ContactSection() {
                       ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
                       : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
                   }`}
+<<<<<<< HEAD
                   placeholder={phonePlaceholder}
+=======
+                  placeholder="+233 XXX XXX XXX"
+>>>>>>> c78230b (refactor: Mobile UI and Typography adjustments)
                 />
                 {errors.phone && (
                   <p className="text-sm text-red-400 ml-1">

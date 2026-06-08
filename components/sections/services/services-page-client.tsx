@@ -23,10 +23,16 @@ export function ServicesPageClient({ content }: { content: ServicesContent }) {
           transition={{ duration: 0.8 }}
           className="pt-32 pb-16 md:pt-40 md:pb-24 text-center max-w-3xl mx-auto"
         >
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight leading-tight">
+          <h1
+            className="font-bold mb-6 tracking-tight leading-tight"
+            style={{ fontSize: "clamp(1.875rem, 7vw, 3.5rem)" }}
+          >
             {content.hero.title}
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+          <p
+            className="mb-8 leading-relaxed text-muted-foreground"
+            style={{ fontSize: "clamp(1rem, 2vw, 1.25rem)" }}
+          >
             {content.hero.subtitle}
           </p>
           <div className="flex justify-center">

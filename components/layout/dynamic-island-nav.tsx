@@ -76,9 +76,17 @@ export function DynamicIslandNav() {
       if (element) observer.observe(element);
     });
 
+    // Handle initial hash on page load or route change
     const currentHash = window.location.hash.replace("#", "");
     if (currentHash && sectionIds.includes(currentHash)) {
       setActiveSection(currentHash);
+      // Scroll to section if it exists
+      setTimeout(() => {
+        const element = document.getElementById(currentHash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 0);
     } else if (window.scrollY < 100) {
       setActiveSection("home");
     }

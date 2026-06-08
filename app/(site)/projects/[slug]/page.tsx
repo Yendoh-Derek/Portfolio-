@@ -16,6 +16,7 @@ import {
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { ProjectDetailSidebar } from "@/components/projects/project-detail-sidebar";
+import { MobileAICTA } from "@/components/projects/mobile-ai-cta";
 import { ProjectFeatureIcon } from "@/components/projects/project-feature-icon";
 import { RelatedProjects } from "@/components/projects/related-projects";
 import { SectionHeading } from "@/components/projects/section-heading";
@@ -99,7 +100,7 @@ export default async function ProjectDetailPage({
         </Link>
 
         {/* Hero */}
-        <header className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mb-16 lg:mb-24 items-center">
+        <header className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 mb-16 lg:mb-24 items-stretch">
           <div className="lg:col-span-7 space-y-5">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08]">
               {project.title}
@@ -108,7 +109,7 @@ export default async function ProjectDetailPage({
               {project.description}
             </p>
 
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-3 pt-2 justify-center lg:justify-start">
               {project.projectUrl && (
                 <a
                   href={project.projectUrl}
@@ -131,6 +132,11 @@ export default async function ProjectDetailPage({
                   GitHub
                 </a>
               )}
+            </div>
+
+            {/* Mobile AI Assistant CTA - hidden on desktop */}
+            <div className="lg:hidden pt-4">
+              <MobileAICTA projectTitle={project.title} />
             </div>
           </div>
 

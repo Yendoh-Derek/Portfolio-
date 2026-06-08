@@ -6,9 +6,11 @@ import { SparkleIcon } from "@/components/ui/sparkle-icon";
 export function ConsultationButton({ label }: { label: string }) {
   const handleContactClick = () => {
     if (window.location.pathname === "/") {
-      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+      document
+        .getElementById("form-section")
+        ?.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.location.href = "/#contact";
+      window.location.href = "/#form-section";
     }
   };
 

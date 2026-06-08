@@ -224,7 +224,7 @@
     "description": "Low-latency AI voice tutor pipeline — concurrent Deepgram STT, Groq LLM, and OpenAI TTS streaming that delivers first audio in ~400ms instead of 3–5s sequential latency.",
     "imageUrl": "/images/cascade.png",
     "projectUrl": "",
-    "githubUrl": "https://github.com/Yendoh-Derek/Edge-AI",
+    "githubUrl": "https://github.com/Yendoh-Derek/Cascade.git",
     "tech": [
       "FastAPI",
       "WebSockets",
