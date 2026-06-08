@@ -163,7 +163,7 @@ function TimelineCard({
 
               {/* Description - Bullet Points or Paragraphs */}
               {exp.description && exp.description.length > 0 ? (
-                <div className="space-y-3 text-sm md:text-base text-gray-200 leading-relaxed">
+                <div className="space-y-3 text-sm md:text-base text-gray-200 leading-relaxed break-words">
                   {isBulletFormat
                     ? exp.description.map((item, i) => (
                         <p key={i} className="flex gap-3">

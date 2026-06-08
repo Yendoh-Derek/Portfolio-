@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Syne } from "next/font/google";
 import { getProfile } from "@/lib/content";
 import "./globals.css";
@@ -17,6 +17,13 @@ const syne = Syne({
   variable: "--font-syne",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#000000",
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getProfile();

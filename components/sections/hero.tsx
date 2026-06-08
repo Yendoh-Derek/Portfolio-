@@ -26,15 +26,15 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
   return (
     <section
       id="home"
-      className="relative min-h-[85vh] flex overflow-hidden pb-0 pt-20 sm:pt-24 md:pt-28 lg:pt-32 max-w-[100vw]"
+      className="relative h-auto flex flex-col justify-start overflow-hidden pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-8 sm:pb-10 md:pb-12 lg:pb-16 max-w-[100vw]"
     >
       <div className="absolute top-[15%] left-[5%] w-[420px] h-[420px] bg-primary/15 rounded-full blur-[130px] mix-blend-screen pointer-events-none z-0" />
       <div className="absolute top-[30%] right-[0%] w-[380px] h-[380px] bg-accent/10 rounded-full blur-[110px] mix-blend-screen pointer-events-none z-0" />
       <div className="absolute bottom-[10%] left-[30%] w-[300px] h-[300px] bg-primary/8 rounded-full blur-[100px] pointer-events-none z-0" />
 
-      <div className="container relative z-10 px-6 sm:px-8 md:px-10 lg:px-14 xl:px-16 max-w-7xl mx-auto w-full flex items-start md:items-center h-full">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-start md:justify-between gap-12 md:gap-12 lg:gap-16 w-full">
-          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left w-full md:max-w-[48%]">
+      <div className="container relative z-10 px-6 sm:px-8 md:px-10 lg:px-14 xl:px-16 max-w-7xl mx-auto w-full">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-12 md:gap-12 lg:gap-16 w-full">
+          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left w-full md:max-w-[50%]">
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -68,7 +68,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex flex-row gap-3 sm:gap-4 w-full max-w-2xl justify-center md:justify-start flex-nowrap relative z-20"
+              className="flex flex-row gap-3 sm:gap-4 w-full max-w-2xl justify-center md:justify-start flex-wrap relative z-20"
             >
               <motion.button
                 onClick={onOpenChat}
@@ -130,7 +130,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="w-full h-[320px] sm:h-[380px] md:h-[400px] lg:h-[480px] relative z-0 pointer-events-none md:pointer-events-auto"
+            className="w-full max-w-[500px] aspect-square relative z-0 pointer-events-none md:pointer-events-auto mx-auto md:mx-0"
           >
             <ParticleField />
           </motion.div>

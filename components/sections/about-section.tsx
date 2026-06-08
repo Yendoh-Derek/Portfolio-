@@ -14,7 +14,7 @@ export function AboutSection() {
   return (
     <section
       id="about"
-      className="py-8 md:py-16 lg:py-24 container mx-auto px-4 relative overflow-hidden"
+      className="pt-4 pb-16 md:pt-8 md:pb-24 lg:pt-12 lg:pb-32 container mx-auto px-4 relative overflow-hidden"
     >
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
@@ -33,7 +33,7 @@ export function AboutSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-[10px] md:text-xs font-bold tracking-[0.3em] text-primary uppercase mb-10 block"
+              className="text-sm md:text-xs font-bold tracking-[0.3em] text-primary uppercase mb-10 block"
             >
               {about.label}
             </motion.span>
@@ -106,10 +106,10 @@ export function AboutSection() {
             >
               {about.sections.map((section) => (
                 <div key={section.title} className="group">
-                  <h3 className="text-[10px] font-bold tracking-[0.2em] text-primary/60 uppercase mb-4 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-sm font-bold tracking-[0.2em] text-primary/60 uppercase mb-4 group-hover:text-primary transition-colors duration-300">
                     {section.title}
                   </h3>
-                  <p className="text-base md:text-lg text-muted-foreground leading-relaxed font-light">
+                  <p className="text-base md:text-lg text-muted-foreground leading-relaxed font-light break-words">
                     {section.content}
                   </p>
                 </div>
