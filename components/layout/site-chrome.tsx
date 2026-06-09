@@ -18,8 +18,8 @@ export function SiteChrome({
 }) {
   return (
     <ProfileProvider profile={profile}>
-      <SiteEffects />
       <SmoothScroll>
+        <SiteEffects />
         <ChatProvider>
           <DynamicIslandNav />
           <main className="relative z-10 min-h-screen">

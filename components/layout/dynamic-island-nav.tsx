@@ -37,17 +37,9 @@ export function DynamicIslandNav() {
 
   // Handle navigation to hash sections
   const handleNavClick = (href: string) => {
-    // If it's a hash link and we're not on home page, navigate to home first
+    // If it's a hash link and we're not on home page, navigate with hash
     if (href.startsWith("/#") && pathname !== "/") {
-      router.push("/");
-      // Scroll to section after route change
-      setTimeout(() => {
-        const sectionId = href.replace("/#", "");
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 100);
+      router.push(href);
       return;
     }
   };
