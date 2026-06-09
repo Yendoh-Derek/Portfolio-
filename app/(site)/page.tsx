@@ -1,21 +1,13 @@
 import { Suspense } from "react";
 import { HomeClient } from "@/components/sections/home-client";
-import { getExperience, getProjects, getSkills } from "@/lib/content";
+import { getProjects, getSkills } from "@/lib/content";
 
 export default async function Home() {
-  const [projects, skills, experience] = await Promise.all([
-    getProjects(),
-    getSkills(),
-    getExperience(),
-  ]);
+  const [projects, skills] = await Promise.all([getProjects(), getSkills()]);
 
   return (
     <Suspense fallback={null}>
-      <HomeClient
-        projects={projects}
-        skills={skills}
-        experience={experience}
-      />
+      <HomeClient projects={projects} skills={skills} />
     </Suspense>
   );
 }

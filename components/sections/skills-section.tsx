@@ -108,7 +108,7 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
                         alt={`${skill.name} logo`}
                         fill
                         sizes="48px"
-                        className="object-cover transition-all duration-500 group-hover:scale-110"
+                        className="object-cover transition-all duration-500 group-hover:scale-110 skill-icon-primary"
                       />
                     ) : (
                       <div className="text-primary group-hover:text-white transition-colors duration-300">
