@@ -39,6 +39,9 @@ export function middleware(request: NextRequest) {
   const isProd = process.env.NODE_ENV === "production";
   const cspRules = [
     "default-src 'self'",
+    // KNOWN LIMITATION: Framer Motion requires unsafe-eval; unsafe-inline could be replaced
+    // with nonce-based CSP (Next.js 14.2+). Post-launch hardening: use strict-dynamic + nonce.
+    // See: https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy
     "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
     "font-src 'self' fonts.gstatic.com data:",

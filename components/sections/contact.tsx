@@ -72,20 +72,6 @@ export function ContactSection() {
     mode: "onBlur",
   });
 
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [phonePlaceholder, setPhonePlaceholder] = useState("+233 XXX XXX XXX");
-
-  useEffect(() => {
-    const updatePlaceholder = () => {
-      setPhonePlaceholder(
-        window.innerWidth < 640 ? "+233 XXX XXX XXX" : "+233 XXX XXX XXX",
-      );
-    };
-    updatePlaceholder();
-    window.addEventListener("resize", updatePlaceholder);
-    return () => window.removeEventListener("resize", updatePlaceholder);
-  }, []);
-
   // Auto-close success message after 5 seconds
   useEffect(() => {
     if (submitStatus === "success") {
@@ -99,7 +85,6 @@ export function ContactSection() {
   // Explicit client-side submission handler
   const handleFormSubmit = handleSubmit(async (data: ContactFormInputs) => {
     setSubmitStatus("submitting");
-    setSubmitError(null);
 
     try {
       const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
@@ -129,14 +114,10 @@ export function ContactSection() {
         setSubmitStatus("success");
         reset();
       } else {
-        setSubmitError(
-          result.message || "Failed to send message. Please try again.",
-        );
         setSubmitStatus("error");
       }
     } catch (err) {
       console.error("Form submission error:", err);
-      setSubmitError("An unexpected error occurred. Please try again later.");
       setSubmitStatus("error");
     }
   });
@@ -339,18 +320,14 @@ export function ContactSection() {
                   <input
                     type="tel"
                     id="phone"
-                    {...register("phone", {
-                      onChange: (e) => {
-                        e.target.value = formatPhoneDisplay(e.target.value);
-                      },
-                    })}
+                    {...register("phone")}
                     autoComplete="tel"
                     className={`w-full bg-white/5 hover:bg-white/10 border focus:ring-2 focus:outline-none rounded-xl px-4 py-3.5 text-white transition-all placeholder:text-white/20 duration-300 ${
                       errors.phone
                         ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
                         : "border-white/10 focus:border-primary/50 focus:ring-primary/20"
                     }`}
-                    placeholder={phonePlaceholder}
+                    placeholder="+233 XXX XXX XXX"
                   />
                   {errors.phone && (
                     <p className="text-sm text-red-400 ml-1">
@@ -391,8 +368,7 @@ export function ContactSection() {
                   <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm">
                     <p className="font-medium">Failed to send message</p>
                     <p className="text-xs mt-1">
-                      {submitError ??
-                        "Please check your information and try again."}
+                      Please check your information and try again.
                     </p>
                   </div>
                 )}

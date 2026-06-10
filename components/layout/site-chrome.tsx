@@ -20,13 +20,15 @@ export function SiteChrome({
     <ProfileProvider profile={profile}>
       <SmoothScroll>
         <SiteEffects />
-        <ChatProvider>
-          <DynamicIslandNav />
-          <main className="relative z-10 min-h-screen">
-            <Suspense fallback={null}>{children}</Suspense>
-          </main>
-          <Footer />
-        </ChatProvider>
+        <Suspense fallback={null}>
+          <ChatProvider>
+            <DynamicIslandNav />
+            <main className="relative z-10 min-h-screen">
+              <Suspense fallback={null}>{children}</Suspense>
+            </main>
+            <Footer />
+          </ChatProvider>
+        </Suspense>
       </SmoothScroll>
     </ProfileProvider>
   );

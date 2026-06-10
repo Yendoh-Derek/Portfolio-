@@ -1,6 +1,8 @@
 import { z } from "zod";
 import type { ChatMessage } from "./chat";
 
+export type { ChatMessage };
+
 const chatMessageSchema = z.object({
   role: z.enum(["user", "model"]),
   parts: z.string().trim().min(1).max(2000),
@@ -16,7 +18,10 @@ export function validateChatMessages(
 ): { ok: true; messages: ChatMessage[] } | { ok: false; error: string } {
   const parsed = chatRequestSchema.safeParse(messages);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid messages" };
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid messages",
+    };
   }
 
   const last = parsed.data[parsed.data.length - 1];

@@ -1,16 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { SparkleIcon } from "@/components/ui/sparkle-icon";
 
 export function ConsultationButton({ label }: { label: string }) {
+  const router = useRouter();
   const handleContactClick = () => {
     if (window.location.pathname === "/") {
       document
         .getElementById("form-section")
         ?.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.location.href = "/#form-section";
+      router.push("/#form-section");
     }
   };
 

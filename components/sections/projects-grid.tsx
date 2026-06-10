@@ -7,14 +7,6 @@ interface ProjectsGridProps {
   onAskAI: (context: string) => void;
 }
 
-const OPEN_SOURCE_SLUGS = new Set([
-  "cascade",
-  "prompt-engineering-framework",
-  "recommendation-system",
-  "diatrack",
-  "cardiometabolic-risk-from-wearables",
-]);
-
 export function ProjectsGrid({ projects, onAskAI }: ProjectsGridProps) {
   const container = {
     hidden: { opacity: 0 },
@@ -67,19 +59,13 @@ export function ProjectsGrid({ projects, onAskAI }: ProjectsGridProps) {
                 description: project.description,
                 links: {
                   demo: project.projectUrl,
-                  github: OPEN_SOURCE_SLUGS.has(project.slug)
-                    ? project.githubUrl
-                    : undefined,
+                  github: project.isOpenSource ? project.githubUrl : undefined,
                 },
                 imageUrl: project.imageUrl,
                 slug: project.slug,
-                isPrivate: project.slug === "edge-ai",
+                isPrivate: project.isPrivate || false,
               }}
-              onAskAI={(title) =>
-                onAskAI(
-                  `Tell me about the technical approach for the ${title} project.`,
-                )
-              }
+              onAskAI={onAskAI}
               index={index}
             />
           ))

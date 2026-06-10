@@ -11,14 +11,11 @@ interface SkillsSectionProps {
 export function SkillsSection({ skills }: SkillsSectionProps) {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
-  const categories = [
-    "All",
-    "Frontend",
-    "Backend",
-    "Database",
-    "Tools",
-    "AI/ML",
-  ];
+  // Dynamically generate categories from skills data
+  const uniqueCategories = Array.from(
+    new Set(skills.map((skill) => skill.category)),
+  ).sort();
+  const categories = ["All", ...uniqueCategories];
 
   const filteredSkills =
     activeCategory === "All"
@@ -37,6 +34,8 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
         return <Code2 size={20} />;
       case "Tools":
         return <Wrench size={20} />;
+      case "All":
+        return <Code2 size={20} />;
       default:
         return <Code2 size={20} />;
     }
