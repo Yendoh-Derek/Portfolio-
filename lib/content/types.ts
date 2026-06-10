@@ -43,6 +43,8 @@ export interface Project {
   tech: string[];
   order: number;
   details?: ProjectDetails;
+  isOpenSource?: boolean;
+  isPrivate?: boolean;
 }
 
 export type ExperienceType = "Experience" | "Education" | "Certification";

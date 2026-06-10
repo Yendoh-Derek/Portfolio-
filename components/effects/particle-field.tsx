@@ -188,6 +188,7 @@ export function ParticleField() {
 
       <canvas
         ref={canvasRef}
+        aria-hidden="true"
         className="absolute inset-0 w-full h-full opacity-95"
       />
 

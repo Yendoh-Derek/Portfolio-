@@ -4,9 +4,10 @@ import { Hero } from "@/components/sections/hero";
 import { AboutSection } from "@/components/sections/about-section";
 import { ProjectsGrid } from "@/components/sections/projects-grid";
 import { SkillsSection } from "@/components/sections/skills-section";
+import { ExperienceTimeline } from "@/components/sections/experience-timeline";
 import { ContactSection } from "@/components/sections/contact";
 import { useEffect } from "react";
-import type { Project, Skill } from "@/lib/content";
+import type { Project, Skill, Experience } from "@/lib/content";
 import { ServicesTeaser } from "@/components/sections/services-teaser";
 import { useChat } from "@/components/chat-provider";
 import { ScrollReveal } from "@/components/layout/scroll-reveal";
@@ -14,9 +15,10 @@ import { ScrollReveal } from "@/components/layout/scroll-reveal";
 interface HomeClientProps {
   projects: Project[];
   skills: Skill[];
+  experience: Experience[];
 }
 
-export function HomeClient({ projects, skills }: HomeClientProps) {
+export function HomeClient({ projects, skills, experience }: HomeClientProps) {
   const { openChat } = useChat();
 
   useEffect(() => {
@@ -44,6 +46,10 @@ export function HomeClient({ projects, skills }: HomeClientProps) {
 
       <ScrollReveal delay={0.1}>
         <ProjectsGrid projects={projects} onAskAI={handleAskAI} />
+      </ScrollReveal>
+
+      <ScrollReveal delay={0.1}>
+        <ExperienceTimeline experience={experience} />
       </ScrollReveal>
 
       <ScrollReveal delay={0.1}>

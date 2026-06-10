@@ -1,12 +1,12 @@
-import { SiteShell } from "@/components/layout/site-shell";
+import { SiteChrome } from "@/components/layout/site-chrome";
 import { getProfile } from "@/lib/content";
 
 export default async function SiteLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    const profile = await getProfile();
+  const profile = await getProfile();
 
-    return <SiteShell profile={profile}>{children}</SiteShell>;
+  return <SiteChrome profile={profile}>{children}</SiteChrome>;
 }
