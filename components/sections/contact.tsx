@@ -209,7 +209,7 @@ export function ContactSection() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="obsidian-card !bg-white/5 p-8 md:p-12 shadow-2xl relative group"
+          className="obsidian-card !bg-[#050505]/95 p-8 md:p-12 shadow-2xl relative group"
         >
           {/* Obsidian Effects */}
           <div className="obsidian-highlight group-hover:opacity-100" />
