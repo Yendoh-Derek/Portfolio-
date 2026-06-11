@@ -33,8 +33,8 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
       <div className="absolute bottom-[10%] left-[30%] w-[300px] h-[300px] bg-primary/8 rounded-full blur-[100px] pointer-events-none z-0" />
 
       <div className="container relative z-10 px-6 sm:px-8 md:px-10 lg:px-14 xl:px-16 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-12 md:gap-12 lg:gap-16 w-full">
-          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left w-full md:max-w-[50%]">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8 lg:gap-16 w-full">
+          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left w-full md:w-auto min-w-0">
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -68,7 +68,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex flex-row gap-3 sm:gap-4 w-full max-w-2xl justify-center md:justify-start flex-wrap relative z-20"
+              className="flex flex-row gap-3 sm:gap-4 justify-center md:justify-start flex-shrink-0 relative z-20"
             >
               <motion.button
                 onClick={onOpenChat}
@@ -130,7 +130,7 @@ export function Hero({ onOpenChat }: { onOpenChat: () => void }) {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="w-full max-w-[500px] aspect-square relative z-0 pointer-events-none md:pointer-events-auto mx-auto md:mx-0"
+            className="flex-1 w-full max-w-[500px] aspect-square relative z-0 pointer-events-none md:pointer-events-auto mx-auto md:mx-0"
           >
             <ParticleField />
           </motion.div>
