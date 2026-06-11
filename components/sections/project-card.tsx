@@ -1,9 +1,8 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useEffect, useRef, useState, type MouseEvent } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ExternalLink, Github, ArrowRight, Lock } from "lucide-react";
-import { MouseEvent, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SparkleIcon } from "@/components/ui/sparkle-icon";
@@ -30,6 +29,13 @@ function ProjectCardComponent({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const prefersReducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    prefersReducedMotionRef.current = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+  }, []);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -38,6 +44,7 @@ function ProjectCardComponent({
   const rotateY = useSpring(0, { stiffness: 100, damping: 30 });
 
   function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+    if (prefersReducedMotionRef.current) return;
     if (!containerRef.current) return;
     const { left, top, width, height } = currentTarget.getBoundingClientRect();
 

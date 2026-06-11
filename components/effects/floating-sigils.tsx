@@ -6,6 +6,11 @@ export function FloatingSigils() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (prefersReduced) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -15,9 +20,18 @@ export function FloatingSigils() {
     let h = (canvas.height = window.innerHeight);
 
     let isVisible = !document.hidden;
+    let rafId: number | null = null;
+
     const handleVisibilityChange = () => {
       isVisible = !document.hidden;
-      if (isVisible) draw();
+      if (!isVisible) {
+        if (rafId !== null) cancelAnimationFrame(rafId);
+        rafId = null;
+        return;
+      }
+      if (rafId === null) {
+        rafId = requestAnimationFrame(draw);
+      }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
@@ -152,7 +166,10 @@ export function FloatingSigils() {
     let frame = 0;
 
     function draw() {
-      if (!isVisible) return;
+      if (!isVisible) {
+        rafId = null;
+        return;
+      }
       if (!ctx) return;
       ctx.clearRect(0, 0, w, h);
 
@@ -276,10 +293,10 @@ export function FloatingSigils() {
         spawnPulse();
       }
 
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     }
 
-    draw();
+    rafId = requestAnimationFrame(draw);
 
     const handleResize = () => {
       w = canvas.width = window.innerWidth;
@@ -290,6 +307,7 @@ export function FloatingSigils() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("resize", handleResize);
     };

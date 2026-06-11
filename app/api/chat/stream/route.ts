@@ -1,7 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { getSystemPrompt } from "@/lib/ai/system-prompt";
+import { buildRequestPrompt } from "@/lib/ai/system-prompt";
 import { checkRateLimit } from "@/lib/analytics/rate-limit";
 import { validateChatMessages, type ChatMessage } from "@/lib/ai/validation";
+
+const MAX_MESSAGE_LIMIT = 40;
 
 export async function POST(request: Request) {
   try {
@@ -15,6 +17,16 @@ export async function POST(request: Request) {
     const validated = validateChatMessages(messages as ChatMessage[]);
     if (!validated.ok) {
       return new Response(validated.error, { status: 400 });
+    }
+
+    // Check message limit
+    if (validated.messages.length > MAX_MESSAGE_LIMIT) {
+      return new Response(
+        "MESSAGE_LIMIT_EXCEEDED: Too many messages in this conversation. Please clear the chat to continue.",
+        {
+          status: 413,
+        },
+      );
     }
 
     // Check rate limit
@@ -32,7 +44,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const systemPrompt = await getSystemPrompt();
+    const systemPrompt = await buildRequestPrompt(validated.messages);
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
@@ -48,7 +60,64 @@ export async function POST(request: Request) {
     });
 
     const lastMessage = validated.messages[validated.messages.length - 1].parts;
-    const result = await chat.sendMessageStream(lastMessage);
+
+    // Handle errors that occur before the stream starts
+    let result;
+    try {
+      result = await chat.sendMessageStream(lastMessage);
+    } catch (error) {
+      console.error("Chat send error:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+
+      // Create a stream that sends the error
+      const encoder = new TextEncoder();
+      const errorStream = new ReadableStream({
+        start(controller) {
+          if (
+            errorMessage.includes("503") ||
+            errorMessage.includes("Service Unavailable")
+          ) {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ error: "The AI is currently experiencing high demand. Please try again later." })}\n\n`,
+              ),
+            );
+          } else if (errorMessage.includes("RATE_LIMIT")) {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ error: "I'm processing too many requests. Please wait a moment and try again." })}\n\n`,
+              ),
+            );
+          } else if (
+            errorMessage.includes("API_KEY") ||
+            errorMessage.includes("authentication")
+          ) {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ error: "I'm having trouble authenticating. Please try again later." })}\n\n`,
+              ),
+            );
+          } else {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ error: "Sorry, I encountered an error. Please try again later." })}\n\n`,
+              ),
+            );
+          }
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+          controller.close();
+        },
+      });
+
+      return new Response(errorStream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        },
+      });
+    }
 
     // Create a ReadableStream for streaming response
     const encoder = new TextEncoder();
@@ -81,7 +150,16 @@ export async function POST(request: Request) {
             error instanceof Error ? error.message : "Unknown error";
           console.error("Stream error:", errorMessage);
 
-          if (errorMessage.includes("RATE_LIMIT")) {
+          if (
+            errorMessage.includes("503") ||
+            errorMessage.includes("Service Unavailable")
+          ) {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ error: "The AI is currently experiencing high demand. Please try again later." })}\n\n`,
+              ),
+            );
+          } else if (errorMessage.includes("RATE_LIMIT")) {
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({ error: "I'm processing too many requests. Please wait a moment and try again." })}\n\n`,

@@ -9,6 +9,7 @@ import { useProfile } from "@/components/profile-provider";
 import { DEFAULT_CHAT_SUGGESTIONS } from "@/lib/constants/chat-suggestions";
 import ReactMarkdown from "react-markdown";
 import FocusTrap from "focus-trap-react";
+import { useRouter } from "next/navigation";
 
 interface Message {
   role: "user" | "model";
@@ -27,6 +28,7 @@ export function Chatbot({
   prefillInput?: string;
 }) {
   const { personal } = useProfile();
+  const router = useRouter();
   const firstName = (personal.shortName || personal.name).split(" ")[0];
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -58,7 +60,7 @@ export function Chatbot({
   useEffect(() => {
     let sid = localStorage.getItem("chat_session_id");
     if (!sid) {
-      sid = Math.random().toString(36).substring(2, 15);
+      sid = crypto.randomUUID();
       localStorage.setItem("chat_session_id", sid);
     }
     setSessionId(sid);
@@ -174,7 +176,7 @@ export function Chatbot({
     const sid =
       sessionId ||
       localStorage.getItem("chat_session_id") ||
-      Math.random().toString(36).substring(2, 15);
+      crypto.randomUUID();
     if (!sessionId) {
       localStorage.setItem("chat_session_id", sid);
       setSessionId(sid);
@@ -232,6 +234,17 @@ Interested in working together?
               return updated;
             });
           }
+        } else if (response.status === 413) {
+          const limitMessage = `
+⚠️ **You've reached the conversation length limit!**
+
+Please clear the chat to continue.
+            `.trim();
+          setMessages((prev) => {
+            const updated = [...prev];
+            updated[messageIndex] = { role: "model", parts: limitMessage };
+            return updated;
+          });
         } else {
           throw new Error(errorText);
         }
@@ -360,7 +373,7 @@ Interested in working together?
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="fixed bottom-4 left-0 right-0 mx-auto md:left-auto md:right-8 md:bottom-4 md:mx-0 w-[85vw] md:w-[400px] h-[65dvh] md:h-[600px] md:max-h-[80vh] min-h-[400px] bg-[#050505]/95 backdrop-blur-xl rounded-[1.5rem] flex flex-col shadow-2xl z-50 overflow-hidden border border-white/20 ring-1 ring-white/5"
+              className="fixed bottom-4 left-0 right-0 mx-auto md:left-auto md:right-8 md:bottom-4 md:mx-0 w-[85vw] max-w-sm md:w-[400px] md:max-w-none h-[65dvh] md:h-[600px] md:max-h-[80vh] min-h-[400px] bg-[#050505]/95 backdrop-blur-xl rounded-[1.5rem] flex flex-col shadow-2xl z-50 overflow-hidden border border-white/20 ring-1 ring-white/5"
             >
               {/* Header */}
               <div className="p-4 bg-white/5 backdrop-blur-md flex justify-between items-center border-b border-white/20">
@@ -380,13 +393,39 @@ Interested in working together?
                     </h3>
                   </div>
                 </div>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                  aria-label="Close assistant"
-                >
-                  <X size={18} className="text-white/70" />
-                </button>
+                <div className="flex items-center gap-1">
+                  {messages.length > 0 && (
+                    <button
+                      onClick={() => setMessages([])}
+                      className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                      aria-label="Clear conversation"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-white/70"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      </svg>
+                    </button>
+                  )}
+                  <button
+                    onClick={onClose}
+                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                    aria-label="Close assistant"
+                  >
+                    <X size={18} className="text-white/70" />
+                  </button>
+                </div>
               </div>
 
               {/* Messages */}
@@ -526,7 +565,7 @@ Interested in working together?
                                   if (el) {
                                     el.scrollIntoView({ behavior: "smooth" });
                                   } else {
-                                    window.location.href = "/#contact";
+                                    router.push("/#contact");
                                   }
                                 }, 300);
                               }}

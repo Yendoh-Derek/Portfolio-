@@ -20,3 +20,22 @@ export async function loadAllProjectDocs(): Promise<string> {
     return "";
   }
 }
+
+export async function loadAllDocsAsMap(): Promise<Record<string, string>> {
+  try {
+    const files = await fs.readdir(docsDir);
+    const docs: Record<string, string> = {};
+
+    for (const file of files) {
+      if (!file.endsWith(".md")) continue;
+      const key = file.replace(".md", "");
+      const content = await fs.readFile(path.join(docsDir, file), "utf-8");
+      docs[key] = content;
+    }
+
+    return docs;
+  } catch (e) {
+    console.error("Error reading project docs map:", e);
+    return {};
+  }
+}
