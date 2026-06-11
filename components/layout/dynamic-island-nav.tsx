@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Home, Briefcase, User, Mail, Menu, X, Cpu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const navItems = [
   { name: "Home", href: "/", id: "home", icon: <Home size={18} /> },
@@ -201,6 +201,15 @@ function MobileNav({
   onNavClick: (href: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const raf = requestAnimationFrame(() => {
+      firstLinkRef.current?.focus();
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [isOpen]);
 
   return (
     <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-[90%] flex justify-center">
@@ -246,7 +255,7 @@ function MobileNav({
               exit={{ opacity: 0, height: 0 }}
               className="flex flex-col gap-1 mt-3"
             >
-              {navItems.map((item) => {
+              {navItems.map((item, index) => {
                 const isActive =
                   item.href === "/services"
                     ? pathname === "/services"
@@ -258,6 +267,7 @@ function MobileNav({
                   <Link
                     key={item.name}
                     href={item.href}
+                    ref={index === 0 ? firstLinkRef : undefined}
                     onClick={() => {
                       onNavClick(item.href);
                       setIsOpen(false);

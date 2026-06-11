@@ -20,39 +20,7 @@ import {
   type ContactFormInputs,
 } from "@/lib/validation/contact";
 
-// Phone number formatting utility
-function formatPhoneDisplay(value: string): string {
-  // Remove all non-digits and plus sign
-  const cleaned = value.replace(/[^\d+]/g, "");
 
-  // Handle +233 format: +233 XXX XXX XXX
-  if (cleaned.startsWith("+233")) {
-    const digits = cleaned.slice(4); // Remove +233
-    if (digits.length <= 3) return `+233 ${digits}`;
-    if (digits.length <= 6)
-      return `+233 ${digits.slice(0, 3)} ${digits.slice(3)}`;
-    return `+233 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
-  }
-
-  // Handle 0 format: 0XX XXX XXXX
-  if (cleaned.startsWith("0")) {
-    const digits = cleaned.slice(1); // Remove 0
-    if (digits.length <= 2) return `0${digits}`;
-    if (digits.length <= 5) return `0${digits.slice(0, 2)} ${digits.slice(2)}`;
-    return `0${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 9)}`;
-  }
-
-  // If starts with 233 but no +, add it
-  if (cleaned.startsWith("233")) {
-    const digits = cleaned.slice(3);
-    if (digits.length <= 3) return `+233 ${digits}`;
-    if (digits.length <= 6)
-      return `+233 ${digits.slice(0, 3)} ${digits.slice(3)}`;
-    return `+233 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
-  }
-
-  return cleaned;
-}
 
 export function ContactSection() {
   const { personal } = useProfile();

@@ -31,6 +31,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const url =
     process.env.NEXT_PUBLIC_APP_URL || "https://ai-portfolio.vercel.app";
 
+  const twitterLink = profile.personal.links.twitter;
+  const twitterCreator = (() => {
+    if (!twitterLink) return "";
+    const cleaned = twitterLink.split("?")[0].replace(/\/+$/, "");
+    if (cleaned.startsWith("@")) return cleaned;
+    if (cleaned.startsWith("https://x.com/")) return `@${cleaned.slice(14)}`;
+    if (cleaned.startsWith("https://twitter.com/"))
+      return `@${cleaned.slice(20)}`;
+    return "";
+  })();
+
   return {
     metadataBase: new URL(url),
     title: {
@@ -68,7 +79,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `${name} | AI-Powered Portfolio`,
       description: tagline || title,
       images: ["/images/derek-pic.jpg"],
-      creator: "@derek_yendoh", // Replace if known, otherwise leave as is
+      creator: twitterCreator,
     },
     robots: {
       index: true,

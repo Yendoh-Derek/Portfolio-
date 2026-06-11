@@ -35,7 +35,6 @@ export function ExperienceTimeline({ experience }: ExperienceTimelineProps) {
       <motion.div
         style={{ y: useTransform(scrollYProgress, [0, 1], [-100, 100]) }}
         className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[100px] -z-10"
-        key="parallax-blob"
       />
 
       <motion.div

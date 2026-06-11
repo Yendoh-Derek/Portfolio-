@@ -20,6 +20,11 @@ export function ParticleField() {
   const timeRef = useRef(0);
 
   useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (prefersReduced) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -28,7 +33,7 @@ export function ParticleField() {
 
     const dpr = window.devicePixelRatio || 1;
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const particleCount = isMobile ? 180 : 480;
+    const particleCount = isMobile ? 180 : 300;
 
     const handleResize = () => {
       canvas.width = canvas.offsetWidth * dpr;
@@ -85,10 +90,10 @@ export function ParticleField() {
       const w = canvas.offsetWidth;
       const h = canvas.offsetHeight;
 
-      ctx.fillStyle = "rgba(0, 0, 0, 0.02)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
       ctx.fillRect(0, 0, w, h);
 
-      const centerX = w * 0.65;
+      const centerX = Math.min(w * 0.65, w - 80);
       const centerY = h * 0.5;
 
       timeRef.current += 1;
@@ -108,11 +113,14 @@ export function ParticleField() {
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < 150) {
-            const force = Math.pow(1 - distance / 150, 2) * 0.8;
+            const force = Math.pow(1 - distance / 150, 2) * 0.5;
             const repulsionAngle = Math.atan2(dy, dx);
+            const maxDelta = 0.3;
+            const ax = Math.cos(repulsionAngle) * force * 0.4;
+            const ay = Math.sin(repulsionAngle) * force * 0.4;
 
-            p.vx += Math.cos(repulsionAngle) * force * 0.4;
-            p.vy += Math.sin(repulsionAngle) * force * 0.4;
+            p.vx += Math.max(-maxDelta, Math.min(ax, maxDelta));
+            p.vy += Math.max(-maxDelta, Math.min(ay, maxDelta));
           }
         }
 
@@ -154,15 +162,7 @@ export function ParticleField() {
         ctx.fillStyle = color;
 
         const particleSize = p.size * (0.8 + p.depth * 1.2);
-        const softness = Math.max(2, particleSize * 0.45);
-
-        ctx.roundRect(
-          x - particleSize / 2,
-          y - particleSize / 2,
-          particleSize,
-          particleSize,
-          softness,
-        );
+        ctx.arc(x, y, particleSize / 2, 0, Math.PI * 2);
         ctx.fill();
       });
 

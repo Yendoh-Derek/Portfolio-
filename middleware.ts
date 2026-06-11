@@ -3,16 +3,6 @@ import { type NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  // Force HTTPS redirects (Vercel handles this, but explicit for clarity)
-  const host = request.headers.get("host") || "";
-  const protocol = request.headers.get("x-forwarded-proto") || "http";
-
-  if (protocol === "http" && host.includes("ai-portfolio")) {
-    const url = request.nextUrl.clone();
-    url.protocol = "https:";
-    return NextResponse.redirect(url);
-  }
-
   // Security Headers
   // Strict-Transport-Security: enforce HTTPS for 1 year
   response.headers.set(
@@ -32,7 +22,7 @@ export function middleware(request: NextRequest) {
   // Permissions-Policy: disable unnecessary features
   response.headers.set(
     "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), payment=()",
+    "camera=(), microphone=(self), geolocation=(), payment=()",
   );
 
   // Content-Security-Policy: strict but functional
