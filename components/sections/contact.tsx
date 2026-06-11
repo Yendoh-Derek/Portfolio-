@@ -20,8 +20,6 @@ import {
   type ContactFormInputs,
 } from "@/lib/validation/contact";
 
-
-
 export function ContactSection() {
   const { personal } = useProfile();
   const { email: profileEmail, links } = personal;
@@ -61,6 +59,20 @@ export function ContactSection() {
         throw new Error("Contact service key is missing.");
       }
 
+      const payload: Record<string, any> = {
+        access_key: accessKey,
+        subject: "New Portfolio Contact Form Submission",
+        from_name: data.name,
+        name: data.name,
+        email: data.email,
+        message: data.message,
+      };
+
+      // Only add phone if it's provided and not empty
+      if (data.phone && data.phone.trim() !== "") {
+        payload.phone = data.phone;
+      }
+
       console.log("DEBUG: Client-side fetch to Web3Forms...");
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -68,12 +80,7 @@ export function ContactSection() {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          access_key: accessKey,
-          subject: "New Portfolio Contact Form Submission",
-          from_name: data.name,
-          ...data,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
@@ -283,7 +290,7 @@ export function ContactSection() {
                     htmlFor="phone"
                     className="text-sm font-medium text-white/70 ml-1"
                   >
-                    Phone <span className="text-red-400">*</span>
+                    Phone
                   </label>
                   <input
                     type="tel"
@@ -344,7 +351,8 @@ export function ContactSection() {
                 {/* Privacy Disclosure */}
                 <p className="text-xs text-white/50 text-center">
                   By submitting this form, your name, email, and message will be
-                  sent to Derek Yendoh. This information is used solely for
+                  sent to Derek Yendoh. Phone number is optional and will only
+                  be shared if provided. This information is used solely for
                   communication purposes and will not be shared with third
                   parties.
                 </p>

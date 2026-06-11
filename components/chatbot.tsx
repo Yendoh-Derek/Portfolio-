@@ -39,7 +39,6 @@ export function Chatbot({
     null,
   );
   const inputRef = useRef<HTMLInputElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const scrollLockStateRef = useRef<{
@@ -51,11 +50,6 @@ export function Chatbot({
     bodyWidth: string;
     bodyPaddingRight: string;
   } | null>(null);
-
-  const setDialogNode = useCallback((el: HTMLDivElement | null) => {
-    dialogRef.current = el;
-    setTrapContainer(el);
-  }, []);
 
   useEffect(() => {
     let sid = localStorage.getItem("chat_session_id");
@@ -365,7 +359,7 @@ Please clear the chat to continue.
             }}
           >
             <motion.div
-              ref={setDialogNode}
+              ref={setTrapContainer}
               role="dialog"
               aria-modal="true"
               aria-labelledby="chatbot-title"

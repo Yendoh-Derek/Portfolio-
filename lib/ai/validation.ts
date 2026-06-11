@@ -1,7 +1,9 @@
 import { z } from "zod";
-import type { ChatMessage } from "./chat";
 
-export type { ChatMessage };
+export interface ChatMessage {
+  role: "user" | "model";
+  parts: string;
+}
 
 const chatMessageSchema = z.object({
   role: z.enum(["user", "model"]),

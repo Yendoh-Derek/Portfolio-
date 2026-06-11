@@ -14,8 +14,14 @@ export const contactFormSchema = z.object({
           /^\+?[0-9]{7,15}$/,
           "Please enter a valid phone number (7-15 digits)",
         ),
-    ),
-  message: z.string().trim().min(10, "Message must be at least 10 characters").max(5000),
+    )
+    .optional()
+    .or(z.literal("")),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Message must be at least 10 characters")
+    .max(5000),
 });
 
 export type ContactFormInputs = z.infer<typeof contactFormSchema>;
