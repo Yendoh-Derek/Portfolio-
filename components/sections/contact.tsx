@@ -22,6 +22,8 @@ import {
 
 export function ContactSection() {
   const { personal } = useProfile();
+  const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+  const isFormEnabled = !!accessKey;
   const { email: profileEmail, links } = personal;
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "submitting" | "success" | "error"
@@ -360,7 +362,7 @@ export function ContactSection() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isFormEnabled}
                   className="w-full py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-[0_0_30px_rgba(123,44,191,0.4)] hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
@@ -368,6 +370,8 @@ export function ContactSection() {
                       <span className="animate-spin">⟳</span>
                       Processing...
                     </>
+                  ) : !isFormEnabled ? (
+                    "Contact form unavailable"
                   ) : (
                     <>
                       Send Message <Send size={20} />

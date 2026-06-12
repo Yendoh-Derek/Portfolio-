@@ -5,6 +5,32 @@ import { validateChatMessages, type ChatMessage } from "@/lib/ai/validation";
 
 const MAX_MESSAGE_LIMIT = 40;
 
+async function sendMessageWithRetry(
+  chat: ReturnType<ReturnType<typeof GoogleGenerativeAI.prototype.getGenerativeModel>["startChat"]>,
+  message: string,
+  maxRetries = 2,
+  signal?: AbortSignal,
+) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await chat.sendMessageStream(message, { signal });
+    } catch (error) {
+      if (signal?.aborted) throw error; // don't retry aborted requests
+      const msg = error instanceof Error ? error.message : "";
+      const isRetryable =
+        msg.includes("503") ||
+        msg.includes("Service Unavailable") ||
+        msg.includes("overloaded");
+      if (isRetryable && attempt < maxRetries) {
+        await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw new Error("Max retries exceeded");
+}
+
 export async function POST(request: Request) {
   try {
     const { messages, sessionId } = await request.json();
@@ -48,7 +74,7 @@ export async function POST(request: Request) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash",
       systemInstruction: systemPrompt,
     });
 
@@ -64,7 +90,7 @@ export async function POST(request: Request) {
     // Handle errors that occur before the stream starts
     let result;
     try {
-      result = await chat.sendMessageStream(lastMessage);
+      result = await sendMessageWithRetry(chat, lastMessage, 2, request.signal);
     } catch (error) {
       console.error("Chat send error:", error);
       const errorMessage =
@@ -144,7 +170,6 @@ export async function POST(request: Request) {
 
           // Send completion signal
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-          controller.close();
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
@@ -166,6 +191,15 @@ export async function POST(request: Request) {
               ),
             );
           } else if (
+            errorMessage.includes("Failed to parse stream") ||
+            errorMessage.includes("parse stream")
+          ) {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ error: "I encountered a streaming error while parsing the response. Please try again." })}\n\n`,
+              ),
+            );
+          } else if (
             errorMessage.includes("API_KEY") ||
             errorMessage.includes("authentication")
           ) {
@@ -181,8 +215,9 @@ export async function POST(request: Request) {
               ),
             );
           }
-
+        } finally {
           controller.close();
+          request.signal.removeEventListener("abort", abortHandler);
         }
       },
     });

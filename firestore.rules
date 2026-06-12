@@ -46,10 +46,9 @@ service cloud.firestore {
       allow write: if isAuthenticated();
     }
     
-    // Analytics: Public Read, Admin Write
+    // Analytics: Authenticated only (read/write analytics via server-side firebase-admin)
     match /analytics/{docID} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if isAuthenticated();
     }
 
     // Messages: Admin Read/Delete, Public Create (with validation)
