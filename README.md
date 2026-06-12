@@ -8,7 +8,7 @@ A high-performance **Next.js 14** portfolio featuring an intelligent **AI chatbo
 
 ### 🧠 **Intelligent AI Chatbot**
 
-- **Google Gemini 1.5 Flash**: Fast, cost-effective, and intelligent
+- **Google Gemini 2.5 Flash**: Fast, cost-effective, and intelligent
 - **RAG-Enabled**: Chatbot accesses your project documentation for context-aware answers
 - **Adaptive Personas**: Switches between "Recruiter Mode" and "Dev Mode" based on conversation
 - **Rate Limiting**: Built-in protection with Firebase (optional)
@@ -237,7 +237,6 @@ ai-portfolio/
 │   │   ├── projects/[slug]/ # Project detail pages
 │   │   └── services/        # Services page
 │   ├── api/analytics/       # API routes
-│   ├── actions.ts           # Server actions
 │   └── layout.tsx           # Root layout
 │
 ├── components/

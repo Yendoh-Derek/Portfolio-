@@ -12,8 +12,7 @@ const chatMessageSchema = z.object({
 
 const chatRequestSchema = z
   .array(chatMessageSchema)
-  .min(1, "At least one message is required")
-  .max(40, "Conversation is too long");
+  .min(1, "At least one message is required");
 
 export function validateChatMessages(
   messages: ChatMessage[],

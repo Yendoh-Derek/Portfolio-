@@ -1,3 +1,7 @@
+// NOTE: x-forwarded-for is trusted here because this app is deployed behind
+// Vercel's edge network, which controls this header. If deploying elsewhere
+// (e.g., Docker, Cloud Run), validate that your proxy sets this header
+// and clients cannot spoof it.
 export function getRequestIp(headersList: Headers): string {
   const forwardedFor = headersList.get("x-forwarded-for");
   if (forwardedFor) {

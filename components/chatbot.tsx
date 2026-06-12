@@ -41,15 +41,6 @@ export function Chatbot({
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const scrollLockStateRef = useRef<{
-    scrollY: number;
-    htmlOverflow: string;
-    bodyOverflow: string;
-    bodyPosition: string;
-    bodyTop: string;
-    bodyWidth: string;
-    bodyPaddingRight: string;
-  } | null>(null);
 
   useEffect(() => {
     let sid = localStorage.getItem("chat_session_id");
@@ -95,52 +86,34 @@ export function Chatbot({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isOpen]);
 
+  // Auto-dismiss sendError after 6 seconds
+  useEffect(() => {
+    if (sendError) {
+      const timer = setTimeout(() => {
+        setSendError(null);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [sendError]);
+
   // Prevent scroll on body when chatbot is open (including iOS Safari)
   useEffect(() => {
     if (!isOpen) {
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
-
-      if (scrollLockStateRef.current) {
-        const state = scrollLockStateRef.current;
-        scrollLockStateRef.current = null;
-
-        document.documentElement.style.overflow = state.htmlOverflow;
-        document.body.style.overflow = state.bodyOverflow;
-        document.body.style.position = state.bodyPosition;
-        document.body.style.top = state.bodyTop;
-        document.body.style.width = state.bodyWidth;
-        document.body.style.paddingRight = state.bodyPaddingRight;
-        window.scrollTo(0, state.scrollY);
-      }
+      setSendError(null);
 
       const launcher = document.querySelector<HTMLButtonElement>(
         'button[aria-label="Open AI assistant"]',
       );
       launcher?.focus({ preventScroll: true });
-
       return;
     }
 
-    const scrollY = window.scrollY;
     const scrollbarWidth =
       window.innerWidth - document.documentElement.clientWidth;
 
-    scrollLockStateRef.current = {
-      scrollY,
-      htmlOverflow: document.documentElement.style.overflow,
-      bodyOverflow: document.body.style.overflow,
-      bodyPosition: document.body.style.position,
-      bodyTop: document.body.style.top,
-      bodyWidth: document.body.style.width,
-      bodyPaddingRight: document.body.style.paddingRight,
-    };
-
     document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = "100%";
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
@@ -148,19 +121,8 @@ export function Chatbot({
     return () => {
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
-
-      if (scrollLockStateRef.current) {
-        const state = scrollLockStateRef.current;
-        scrollLockStateRef.current = null;
-
-        document.documentElement.style.overflow = state.htmlOverflow;
-        document.body.style.overflow = state.bodyOverflow;
-        document.body.style.position = state.bodyPosition;
-        document.body.style.top = state.bodyTop;
-        document.body.style.width = state.bodyWidth;
-        document.body.style.paddingRight = state.bodyPaddingRight;
-        window.scrollTo(0, state.scrollY);
-      }
+      document.documentElement.style.overflow = "";
+      document.body.style.paddingRight = "";
     };
   }, [isOpen]);
 
@@ -344,7 +306,7 @@ Please clear the chat to continue.
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             aria-hidden="true"
           />
           <FocusTrap
@@ -354,8 +316,10 @@ Please clear the chat to continue.
                 inputRef.current ?? trapContainer ?? undefined,
               fallbackFocus: () => trapContainer ?? document.body,
               allowOutsideClick: true,
+              clickOutsideDeactivates: false,
               escapeDeactivates: false,
               returnFocusOnDeactivate: false,
+              preventScroll: true,
             }}
           >
             <motion.div
@@ -367,8 +331,12 @@ Please clear the chat to continue.
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ type: "spring", damping: 25, stiffness: 220 }}
               className="fixed bottom-4 left-0 right-0 mx-auto md:left-auto md:right-8 md:bottom-4 md:mx-0 w-[85vw] max-w-sm md:w-[400px] md:max-w-none h-[65dvh] md:h-[600px] md:max-h-[80vh] min-h-[400px] bg-[#050505]/95 backdrop-blur-xl rounded-[1.5rem] flex flex-col shadow-2xl z-50 overflow-hidden border border-white/20 ring-1 ring-white/5"
             >
+              {/* Glassmorphic Background Glows */}
+              <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-primary/10 rounded-full blur-[60px] pointer-events-none -z-10" />
+              <div className="absolute bottom-[100px] left-[-50px] w-48 h-48 bg-secondary/10 rounded-full blur-[60px] pointer-events-none -z-10" />
               {/* Header */}
               <div className="p-4 bg-white/5 backdrop-blur-md flex justify-between items-center border-b border-white/20">
                 <div className="flex items-center gap-3">
@@ -379,12 +347,18 @@ Please clear the chat to continue.
                     />
                   </div>
                   <div>
-                    <h3
-                      id="chatbot-title"
-                      className="font-bold text-white text-sm"
-                    >
-                      {firstName}&apos;s AI Agent
-                    </h3>
+                    <div className="flex items-center gap-1.5">
+                      <h3
+                        id="chatbot-title"
+                        className="font-bold text-white text-sm"
+                      >
+                        {firstName}&apos;s AI Agent
+                      </h3>
+                      <span className="flex h-2 w-2 relative">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -449,12 +423,12 @@ Please clear the chat to continue.
                           key={i}
                           type="button"
                           onClick={() => handleSend(chip)}
-                          className="w-full text-left px-4 py-2.5 rounded-xl bg-white/5 hover:bg-primary/20 border border-white/10 hover:border-primary/40 text-xs text-white/80 hover:text-white transition-all duration-300 flex items-center justify-between group/chip"
+                          className="w-full text-left px-4 py-2.5 rounded-xl bg-white/[0.03] hover:bg-primary/15 border border-white/10 hover:border-primary/40 text-xs text-white/80 hover:text-white transition-all duration-300 flex items-center justify-between group/chip active:scale-[0.98] shadow-sm hover:shadow-[0_0_12px_rgba(0,240,255,0.15)]"
                         >
-                          <span>{chip}</span>
+                          <span className="font-medium">{chip}</span>
                           <Send
-                            size={10}
-                            className="opacity-0 group-hover/chip:opacity-100 transition-opacity text-primary"
+                            size={11}
+                            className="opacity-0 group-hover/chip:opacity-100 transition-all transform translate-x-[-4px] group-hover/chip:translate-x-0 text-primary"
                           />
                         </button>
                       ))}
@@ -486,10 +460,10 @@ Please clear the chat to continue.
                     </div>
                     <div
                       className={cn(
-                        "p-3.5 rounded-2xl text-sm leading-relaxed overflow-hidden shadow-md",
+                        "p-3.5 rounded-2xl text-sm leading-relaxed overflow-hidden shadow-md transition-all duration-300",
                         msg.role === "user"
-                          ? "bg-gradient-to-br from-primary to-[#7b2cbf] text-white rounded-tr-none shadow-[0_4px_12px_rgba(138,43,226,0.2)]"
-                          : "bg-[#0d0720]/80 text-white/95 border border-white/10 rounded-tl-none backdrop-blur-md",
+                          ? "bg-gradient-to-br from-primary to-[#7b2cbf] text-white rounded-tr-none shadow-[0_4px_12px_rgba(138,43,226,0.25)]"
+                          : "bg-white/[0.03] backdrop-blur-md border border-white/10 text-white/90 rounded-tl-none shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-white/20",
                       )}
                     >
                       {msg.role === "user" ? (
@@ -545,6 +519,19 @@ Please clear the chat to continue.
                                   {children}
                                 </a>
                               ),
+                              code: ({ children }) => (
+                                <code className="bg-white/10 px-1.5 py-0.5 rounded font-mono text-xs text-[#00f0ff]">
+                                  {children}
+                                </code>
+                              ),
+                              pre: ({ children }) => (
+                                <pre className="bg-black/55 border border-white/10 p-3 rounded-xl font-mono text-xs overflow-x-auto my-2 text-white/90 shadow-inner">
+                                  {children}
+                                </pre>
+                              ),
+                              h1: ({ children }) => <h1 className="text-base font-bold text-white mt-3 mb-1">{children}</h1>,
+                              h2: ({ children }) => <h2 className="text-sm font-bold text-white mt-2 mb-1">{children}</h2>,
+                              h3: ({ children }) => <h3 className="text-xs font-bold text-white mt-2 mb-1">{children}</h3>,
                             }}
                           >
                             {msg.parts}
@@ -614,10 +601,13 @@ Please clear the chat to continue.
                     ref={inputRef}
                     id="chatbot-input"
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      if (sendError) setSendError(null);
+                    }}
                     autoComplete="off"
                     placeholder="Ask me anything..."
-                    className="flex-1 bg-black/40 border border-white/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none placeholder:text-white/30 transition-all"
+                    className="flex-1 bg-black/40 border border-white/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none placeholder:text-white/30 transition-all focus:shadow-[0_0_15px_rgba(0,240,255,0.15)]"
                     aria-label="Message to AI Assistant"
                   />
                   <button

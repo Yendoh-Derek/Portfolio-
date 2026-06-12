@@ -19,7 +19,6 @@ RAG markdown for the chatbot: `lib/project-docs/{slug}.md` (slug must match `pro
 ```
 app/
   (site)/           Public pages
-  actions.ts        Thin server action → lib/ai/chat
   api/analytics/    Optional visit counter (Firebase)
 
 lib/
@@ -39,7 +38,7 @@ components/
 
 ## AI
 
-`lib/ai/chat.ts` builds context from a cached system prompt (`lib/ai/system-prompt.ts`) built from `getPortfolioSnapshot()` + all `lib/project-docs/*.md`, then calls Gemini with `systemInstruction`. Rate limits use Firebase Admin when service account env vars are set.
+`app/api/chat/stream/route.ts` builds context from request messages and full project documentation (loaded via `getCachedAllDocs` from `lib/ai/system-prompt.ts`), then streams responses from the Google Gemini API. Rate limits use Firebase Admin when service account env vars are set.
 
 ## Deployment (Vercel)
 

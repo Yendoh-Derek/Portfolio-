@@ -62,6 +62,7 @@ export function SkillsSection({ skills }: SkillsSectionProps) {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
+                aria-pressed={isActive}
                 className={`relative px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-colors duration-300 ${
                   isActive ? "text-white" : "text-white/60 hover:text-white"
                 }`}
